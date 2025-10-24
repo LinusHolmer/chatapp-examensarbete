@@ -1,38 +1,11 @@
-
-# Chatapp
-En enkel chattjänst byggd i java med Spring boot och MongoDB.
-Tjänsten låter användare registrera sig, skicka meddelanden, hämta meddelandehistorik och hitta nya vänner.
+# Loggbok
 
 
-## Hur man startar appen
-Du startar appen genom att starta WebserviceUppgiftApplication
+## 2025-10-24
+Skapade upp ett repository.
+Klonade ett gammalt projekt som vi vill fortsätta med.
 
-
-
-## 📡 Exempel på API-anrop
-
-### Registrera användare
-```http
-POST /register
-Content-Type: application/json
-
-{
-  "username": "johan",
-  "password": "hemligt"
-}
-```
-
-
-## Vad har vi lärt oss?
-
-Genom det här projektet har vi lärt oss:
-
-- **Webbtjänster**: Hur man bygger REST API:er i Java med Spring Boot, använder olika HTTP-metoder (GET, POST, PUT, DELETE), och returnerar rätt statuskoder (200, 201, 404, 401). Vi har också förstått skillnaden mellan entiteter och DTO:er.
-
-- **Databaser**: Hur man använder en NoSQL-databas (MongoDB) för att spara och hämta data, och hur det skiljer sig från relationsdatabaser.
-
-- **Versionshantering**: Hur Git och GitHub används för att hålla ordning på kod, skapa branches, göra commits och lösa merge-konflikter.
-
-- **Samarbete**: Hur man arbetar i grupp genom att dela upp uppgifter, kommunicera och skriva tydliga commits så att alla förstår varandras kod.
-
+Vi har valt att använda react för våran frontend. Vi valde react eftersom att vi känner oss bekväma med ramverket och det är stort på arbetsmarknaden.
+Vi valde att använda mongo db som våran databas. Vi känner oss bekväma med databasen och många använder den på arbetsmarknaden.
+Vi skapade en kanban board för att kunna planera vårat arbete enklare. Vi har lagt till några userstories för våran MVP.
 
