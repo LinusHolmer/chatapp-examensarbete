@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.service;
+package se.johan.chatapp.service;
 
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,12 +7,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import se.johan.webservice_uppgift.dto.MessageRequest;
-import se.johan.webservice_uppgift.dto.SentMessageDTO;
-import se.johan.webservice_uppgift.model.ChatUser;
-import se.johan.webservice_uppgift.model.Message;
-import se.johan.webservice_uppgift.repository.ChatUserRepository;
-import se.johan.webservice_uppgift.repository.MessageRepository;
+import se.johan.chatapp.dto.MessageRequest;
+import se.johan.chatapp.dto.SentMessageDTO;
+import se.johan.chatapp.model.ChatUser;
+import se.johan.chatapp.model.Message;
+import se.johan.chatapp.repository.ChatUserRepository;
+import se.johan.chatapp.repository.MessageRepository;
 
 import java.time.LocalDateTime;
 import java.util.*;

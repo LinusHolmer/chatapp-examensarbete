@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift;
+package se.johan.chatapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

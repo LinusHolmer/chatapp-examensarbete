@@ -1,15 +1,15 @@
-package se.johan.webservice_uppgift.controller;
+package se.johan.chatapp.controller;
 
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.johan.webservice_uppgift.dto.AddFriendRequest;
-import se.johan.webservice_uppgift.dto.RegisterRequest;
-import se.johan.webservice_uppgift.model.ChatUser;
-import se.johan.webservice_uppgift.repository.ChatUserRepository;
-import se.johan.webservice_uppgift.service.ChatUserService;
+import se.johan.chatapp.dto.AddFriendRequest;
+import se.johan.chatapp.dto.RegisterRequest;
+import se.johan.chatapp.model.ChatUser;
+import se.johan.chatapp.repository.ChatUserRepository;
+import se.johan.chatapp.service.ChatUserService;
 
 
 import java.util.List;

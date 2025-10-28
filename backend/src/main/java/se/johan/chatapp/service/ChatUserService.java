@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.service;
+package se.johan.chatapp.service;
 
 
 import com.mongodb.DuplicateKeyException;
@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import se.johan.webservice_uppgift.dto.AddFriendRequest;
-import se.johan.webservice_uppgift.dto.RegisterRequest;
-import se.johan.webservice_uppgift.model.ChatUser;
-import se.johan.webservice_uppgift.repository.ChatUserRepository;
-import se.johan.webservice_uppgift.repository.UsernameOnly;
+import se.johan.chatapp.dto.AddFriendRequest;
+import se.johan.chatapp.dto.RegisterRequest;
+import se.johan.chatapp.model.ChatUser;
+import se.johan.chatapp.repository.ChatUserRepository;
+import se.johan.chatapp.repository.UsernameOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;

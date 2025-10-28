@@ -1,10 +1,10 @@
-package se.johan.webservice_uppgift.dto;
+package se.johan.chatapp.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-public record SendMessageDTO(
+public record SendMessageRequest(
 
         @Size(max = 50, message = "Maximum characters is 50")@NotBlank(message = "Name can not be Blank")
     String username,

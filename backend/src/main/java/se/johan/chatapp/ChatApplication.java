@@ -1,12 +1,12 @@
-package se.johan.webservice_uppgift;
+package se.johan.chatapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class WebserviceUppgiftApplication {
+public class ChatApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(WebserviceUppgiftApplication.class, args);
+		SpringApplication.run(ChatApplication.class, args);
 	}
 
 }

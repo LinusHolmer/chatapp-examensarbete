@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.model;
+package se.johan.chatapp.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

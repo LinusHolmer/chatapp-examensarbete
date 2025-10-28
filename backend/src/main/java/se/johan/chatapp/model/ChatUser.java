@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.model;
+package se.johan.chatapp.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

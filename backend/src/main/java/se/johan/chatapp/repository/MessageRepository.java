@@ -1,8 +1,8 @@
-package se.johan.webservice_uppgift.repository;
+package se.johan.chatapp.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import se.johan.webservice_uppgift.model.Message;
+import se.johan.chatapp.model.Message;
 
 import java.util.List;
 

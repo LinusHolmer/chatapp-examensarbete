@@ -1,17 +1,17 @@
-package se.johan.webservice_uppgift.controller;
+package se.johan.chatapp.controller;
 
 
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.johan.webservice_uppgift.dto.MessageRequest;
-import se.johan.webservice_uppgift.dto.SendMessageRequest;
-import se.johan.webservice_uppgift.dto.SentMessageDTO;
-import se.johan.webservice_uppgift.dto.ViewMessagesDTO;
-import se.johan.webservice_uppgift.model.Message;
-import se.johan.webservice_uppgift.repository.MessageRepository;
-import se.johan.webservice_uppgift.service.MessageService;
+import se.johan.chatapp.dto.MessageRequest;
+import se.johan.chatapp.dto.SendMessageRequest;
+import se.johan.chatapp.dto.SentMessageDTO;
+import se.johan.chatapp.dto.ViewMessagesDTO;
+import se.johan.chatapp.model.Message;
+import se.johan.chatapp.repository.MessageRepository;
+import se.johan.chatapp.service.MessageService;
 
 import java.util.List;
 import java.util.NoSuchElementException;

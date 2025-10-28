@@ -1,1 +1,1 @@
-rootProject.name = "webservice-uppgift"
+rootProject.name = "backend"

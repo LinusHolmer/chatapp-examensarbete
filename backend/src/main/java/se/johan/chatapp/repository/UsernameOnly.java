@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.repository;
+package se.johan.chatapp.repository;
 
 public interface UsernameOnly {
     String getUsername();

@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.dto;
+package se.johan.chatapp.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -1,4 +1,4 @@
-package se.johan.webservice_uppgift.config;
+package se.johan.chatapp.config;
 
 
 import org.springframework.context.annotation.Bean;
