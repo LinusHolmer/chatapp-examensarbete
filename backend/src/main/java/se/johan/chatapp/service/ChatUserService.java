@@ -15,6 +15,7 @@ import se.johan.chatapp.repository.UsernameOnly;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +56,7 @@ public class ChatUserService {
         ChatUser chatUser = new ChatUser();
         chatUser.setUsername(registerRequest.username());
         chatUser.setPassword(passwordEncoder.encode(registerRequest.password()));
+        chatUser.setRoles(Set.of("ROLE_USER"));
 
         try {
             //sparar användaren

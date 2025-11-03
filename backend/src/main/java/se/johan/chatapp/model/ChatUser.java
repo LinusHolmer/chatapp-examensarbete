@@ -6,7 +6,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Document(collection = "test")
 public class ChatUser {
@@ -18,20 +20,16 @@ public class ChatUser {
     private String id;
     private List<String> friendList = new ArrayList<>();
 
-    public List<String> getFriendList() {
-        return friendList;
-    }
+    private Set<String> roles = new HashSet<>();
 
-    public void setFriendList(List<String> friendList) {
-        this.friendList = friendList;
-    }
 
     public ChatUser() {
     }
 
-    public ChatUser(String password, String username) {
+    public ChatUser(String password, String username, Set<String> roles) {
         this.password = password;
         this.username = username;
+        this.roles = roles;
     }
 
     public String getUsername() {
@@ -57,4 +55,16 @@ public class ChatUser {
     public void setId(String id) {
         this.id = id;
     }
+
+    public List<String> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(List<String> friendList) {
+        this.friendList = friendList;
+    }
+
+    public Set<String> getRoles() { return roles; }
+
+    public void setRoles(Set<String> roles) { this.roles = roles; }
 }
