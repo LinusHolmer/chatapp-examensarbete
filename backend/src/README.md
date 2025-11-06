@@ -17,3 +17,9 @@ Skapade två nya klasser för jwt token generation och auth för logins.
 TokenService genererar JWT tokens från en Authenticated user.
 AuthController är en REST-controller för login endpoint just nu (Kanske lägger till register också)
 La till role variable till ChatUser för att kunna spara roler för användare.
+
+## 2025-11-06
+La till så att man får en cookie med token istället för att bara få token.
+Gjorde en myUserDetailsService klass som kollar om användaren finns.
+Provade i postman och det funkade.
+Provade på mer saker i nextjs och fick det att funka.
