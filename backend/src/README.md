@@ -23,3 +23,16 @@ La till så att man får en cookie med token istället för att bara få token.
 Gjorde en myUserDetailsService klass som kollar om användaren finns.
 Provade i postman och det funkade.
 Provade på mer saker i nextjs och fick det att funka.
+
+## 2025-11-10
+
+Tog bort onödig kod i frondend för att hemsidan ska se bättre ut.
+La till våran logotyp i hörnet på hemsidan.
+
+Hade problem med next.js då det finns väldigt många autogenererade filer så det blir lite förvirrande.
+Kollade på en tutorial för att förstå grunderna.
+
+Bytte ut vår deprecated AuthenticationManager till den nya varianten.
+La till en "logout" endpoint i AuthControllern som tar bort den inloggade användarens JWT-token, och loggar ut.
+Börjar jobba på login sida för våran frontend.
+
