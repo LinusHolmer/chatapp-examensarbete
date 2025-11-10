@@ -42,10 +42,11 @@ public class SecurityConfig {
         http.
                 authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/login", "chatUser/register"
+                                "/login", "/chatUser/register","/logout"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+                .logout(logout -> logout.disable())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -54,6 +55,7 @@ public class SecurityConfig {
                         oauth2.jwt(jwt ->
                                 jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
                         )
+
                 );
         return http.build();
     }
