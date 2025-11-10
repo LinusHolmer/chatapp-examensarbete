@@ -1,7 +1,16 @@
 import '../app/ui/global.css';
+import Image from 'next/image'
 
 export default function Page() {
   return (
-    <p>hello</p>
+    <main>
+      <Image
+        src="/logo.png"  
+        alt="logo"
+        width={300}                 
+        height={300}
+      />
+     
+    </main>
   );
 }
