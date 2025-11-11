@@ -37,7 +37,7 @@ public class SecurityConfig {
         http.
                 authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/login", "/chatUser/register","/logout"
+                                "/login", "/chatUser/register","/logout", "/public-key"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
