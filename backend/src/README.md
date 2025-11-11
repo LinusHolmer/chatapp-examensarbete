@@ -39,5 +39,5 @@ Börjar jobba på login sida för våran frontend.
 ## 2025-11-11
 
 Skapade loginpage för frontend med klar HTML och CSS.
-
+Skapade en "public-key" endpoint i backend som skickar våran public key i String för jwt.
 
