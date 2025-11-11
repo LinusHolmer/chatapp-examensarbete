@@ -36,3 +36,8 @@ Bytte ut vår deprecated AuthenticationManager till den nya varianten.
 La till en "logout" endpoint i AuthControllern som tar bort den inloggade användarens JWT-token, och loggar ut.
 Börjar jobba på login sida för våran frontend.
 
+## 2025-11-11
+
+Skapade loginpage för frontend med klar HTML och CSS.
+
+
