@@ -25,7 +25,6 @@ Provade i postman och det funkade.
 Provade på mer saker i nextjs och fick det att funka.
 
 ## 2025-11-10
-
 Tog bort onödig kod i frondend för att hemsidan ska se bättre ut.
 La till våran logotyp i hörnet på hemsidan.
 
@@ -37,7 +36,13 @@ La till en "logout" endpoint i AuthControllern som tar bort den inloggade använ
 Börjar jobba på login sida för våran frontend.
 
 ## 2025-11-11
-
 Skapade loginpage för frontend med klar HTML och CSS.
 Skapade en "public-key" endpoint i backend som skickar våran public key i String för jwt.
 
+## 2025-11-13
+Börjar koda på en modal(popup fönster) för frontend och hamburgar meny.
+Skapade en länk för lägg till vänner. När man klickar på länken så kommer man till en ny sida med ett skrivfält. Man kan skriva in ett användarnamn och klicka på "lägg till". 
+Om man klickar på "lägg till" så står det att användaren har lagts till. 
+Gjorde också lite css för att få sidan att se snyggare ut. Länkarna ligger på högersidan och loggan på vänstersidan.
+
+Problem: Cookie behöver ett filter för att läsa JWT från frontend, lösning: JwtCookieFilter, vi försöker förstå lösningen bättre det är väldigt nytt för oss.
