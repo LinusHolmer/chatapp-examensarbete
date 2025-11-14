@@ -46,3 +46,9 @@ Om man klickar på "lägg till" så står det att användaren har lagts till.
 Gjorde också lite css för att få sidan att se snyggare ut. Länkarna ligger på högersidan och loggan på vänstersidan.
 
 Problem: Cookie behöver ett filter för att läsa JWT från frontend, lösning: JwtCookieFilter, vi försöker förstå lösningen bättre det är väldigt nytt för oss.
+
+## 2025-11-14
+Gjorde klart modal för frontend och testade, den funkar.
+Skapade en enkel registerings sida ingen logik bara HTML och CSS.
+
+Problem: Modal komponent var från ett gammalt projekt och i React så syntaxen var olika från Next.js, lösning: Next.js dokumentation 
