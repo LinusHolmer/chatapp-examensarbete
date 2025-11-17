@@ -9,6 +9,6 @@ public record RegisterDTO(
         @Size(max = 50, message = "Maximum characters is 50")@NotBlank(message = "Username can not be Blank")
     String username,
         @Size(max = 50, message = "Maximum characters is 50")@NotBlank(message = "Password can not be Blank")
-    String password)
+    String password, boolean remember)
 {}
 
