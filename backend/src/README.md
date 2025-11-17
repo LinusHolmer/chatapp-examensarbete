@@ -52,3 +52,9 @@ Gjorde klart modal för frontend och testade, den funkar.
 Skapade en enkel registerings sida ingen logik bara HTML och CSS.
 
 Problem: Modal komponent var från ett gammalt projekt och i React så syntaxen var olika från Next.js, lösning: Next.js dokumentation 
+
+## 2025-11-17
+La till typescript för loginpage så man kan logga in, la också till cors config så andra URLS kan kommunicera med backend (localhost:3000).
+
+Problem: Fick 401 när jag skicka request till backend, lösning: .secure ska vara (false) när man jobbar med localhost.
+
