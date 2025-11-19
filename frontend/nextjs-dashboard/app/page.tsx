@@ -9,12 +9,8 @@ export default function Page() {
 
   return (
     <main>
-      <Image src="/logo.png" alt="logo" width={300} height={300} />
-
-      <button onClick={() => setIsOpen(true)}>Open</button>
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <p>Hi</p>
-      </Modal>
+      
+     
     </main>
   );
 }
