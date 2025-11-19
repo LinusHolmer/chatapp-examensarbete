@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.johan.chatapp.dto.RegisterDTO;
+import se.johan.chatapp.dto.RegisterRequest;
+import se.johan.chatapp.model.ChatUser;
+import se.johan.chatapp.service.ChatUserService;
 import se.johan.chatapp.service.TokenService;
 
 import java.security.KeyPair;
@@ -26,11 +30,13 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final ChatUserService service;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, TokenService tokenService) {
+    public AuthController(AuthenticationManager authenticationManager, TokenService tokenService, ChatUserService service) {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.service = service;
     }
 
     @Autowired
@@ -41,6 +47,31 @@ public class AuthController {
     public String getPublicKey(){
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         return Base64.getEncoder().encodeToString(publicKey.getEncoded());
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ChatUser> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        ChatUser createdUser = service.registerUser(registerRequest);
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        createdUser.getUsername(),
+                        createdUser.getPassword()
+                )
+        );
+        String token = tokenService.generateToken(auth);
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                .httpOnly(true)
+                .secure(false) // should be true if using https
+                .path("/")
+                .maxAge(60 * 60)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(createdUser);
     }
 
 
