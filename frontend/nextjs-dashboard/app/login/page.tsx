@@ -28,6 +28,9 @@ export default function LoginPage() {
       }
 
       setSuccess(true);
+      if(success == true){
+        alert("Successfully logged in!")
+      }
     } catch (error) {
       setError("Network error: backend unreachable");
     }

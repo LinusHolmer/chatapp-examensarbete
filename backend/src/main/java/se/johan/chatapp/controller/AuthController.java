@@ -1,6 +1,5 @@
 package se.johan.chatapp.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,28 +49,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ChatUser> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        ChatUser createdUser = service.registerUser(registerRequest);
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        createdUser.getUsername(),
-                        createdUser.getPassword()
-                )
-        );
-        String token = tokenService.generateToken(auth);
-
-        ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                .httpOnly(true)
-                .secure(false) // should be true if using https
-                .path("/")
-                .maxAge(60 * 60)
-                .sameSite("Strict")
-                .build();
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        service.registerUser(registerRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(createdUser);
+                .build();
     }
 
 

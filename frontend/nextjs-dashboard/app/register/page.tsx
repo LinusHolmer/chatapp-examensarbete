@@ -1,4 +1,6 @@
+"use client";
 import "./register.css";
+import { useState } from "react";
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -26,6 +28,9 @@ export default function RegisterPage() {
       }
 
       setSuccess(true);
+
+    
+
     } catch (error) {
       setError("Network error: backend unreachable");
     }
