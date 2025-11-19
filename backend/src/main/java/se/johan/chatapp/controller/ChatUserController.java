@@ -25,13 +25,6 @@ public class ChatUserController {
         this.chatUserRepository = chatUserRepository;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ChatUser> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(service.registerUser(registerRequest));
-    }
-
     @PutMapping("/addFriend")
     public ResponseEntity<ChatUser> addFriend(@Valid @RequestBody AddFriendRequest addFriendRequest) {
         ChatUser updatedUser = service.addFriendService(addFriendRequest);
