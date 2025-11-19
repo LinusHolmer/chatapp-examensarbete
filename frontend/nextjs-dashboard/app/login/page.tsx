@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import "./login.css";
+import { useRouter } from "next/navigation";
+
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -8,6 +10,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [remember, setRemember] = useState<boolean>(false);
+  const router = useRouter();
 
   const login = async () => {
     setError(null);
@@ -28,9 +31,10 @@ export default function LoginPage() {
       }
 
       setSuccess(true);
-      if(success == true){
+      
         alert("Successfully logged in!")
-      }
+        router.push('/')
+      
     } catch (error) {
       setError("Network error: backend unreachable");
     }

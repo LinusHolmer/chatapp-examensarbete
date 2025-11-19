@@ -1,4 +1,5 @@
 "use client";
+import { useRouter } from "next/navigation";
 import "./register.css";
 import { useState } from "react";
 
@@ -7,6 +8,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+    const router = useRouter();
 
 
   const register = async () => {
@@ -28,6 +30,9 @@ export default function RegisterPage() {
       }
 
       setSuccess(true);
+
+        alert("Successfully logged in!")
+        router.push('/login')
 
     
 
