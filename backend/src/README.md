@@ -58,3 +58,22 @@ La till typescript för loginpage så man kan logga in, la också till cors conf
 
 Problem: Fick 401 när jag skicka request till backend, lösning: .secure ska vara (false) när man jobbar med localhost.
 
+## 2025-11-19
+La till en hamburgmeny uppe i högra hörnet. Funderade på om det skulle vara bättre att använda en bild på en hamburgmeny eller om jag skulle använda 3 enkla div-linjer i html. Jag valde att använda div linjer för då kan jag ändra deras utseende hur jag vill.
+ 
+"lägg till vänner" länken i hambyrgmenyn är nu kopplad till våran fungerade "lägg till vänner" sida.
+La också till onClick metoder för att öppna menyn så att man ser länkarna under som nu är "lägg till vänner" och "upptäck". Det finns också en onClick metod för att stänga menyn när man klickat på en länk.
+
+Register metod i AuthController(backend) som skapar en ny användare i databasen och sedan med typescript redirectar till loginpage för att logga in och få JWT cookien(flyttades från ChatUserController).
+Logout page för testning av logout metoden har skapats. 
+Du redirectar också från loginpage till homepage om du lyckas logga in.
+
+Problem: CORS error och 401 error med register metoden, lösning: hade flyttat på register metoden från en controller till en annan och glömt ändra URL:en i SecurityConfig, 401 error var på grund av använding av Entity getter i ny auth token och det fixades av att använda DTO:n(men vi tog bort den logiken i register för att bara kunna få jwt från login metoden, är standarden)
+Hade lite problem med att ha kvar meny-ikonen medans menyn va öppen. Jag valde därför att ändra transparensen på meny-ikonen så att den alltid syns
+ 
++ mergade våra branches till production
+ 
++ la till 2 nya branches som vi ska börja jobba i nu, modal för olika metoder på homepage, homePage för sjävla layouten för sidan
+ 
+
+
