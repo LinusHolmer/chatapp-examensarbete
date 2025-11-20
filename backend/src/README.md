@@ -75,5 +75,9 @@ Hade lite problem med att ha kvar meny-ikonen medans menyn va öppen. Jag valde 
  
 + la till 2 nya branches som vi ska börja jobba i nu, modal för olika metoder på homepage, homePage för sjävla layouten för sidan
  
+## 2025-11-20
+La till en modal för knapparna i hamburgarmenyn.
+Skapade en ny komponent som heter CustomButton, det är den nya standardknappen vi använder.
 
+Problem: när man gjorde login/register behövde man klicka knappen två gånger, lösning: type="button" på knappen
 
