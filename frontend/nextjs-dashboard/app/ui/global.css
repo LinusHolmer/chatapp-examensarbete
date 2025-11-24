@@ -1,4 +1,126 @@
 
+/* Layout: vänster lista + höger chatt */
+.chat-layout {
+  display: flex;
+  box-sizing: border-box;
+}
+
+/* Vänster panel – vänner */
+.friends-panel {
+  width: 260px;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.friends-panel h2 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.5rem;
+}
+
+.friends-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.friend-item {
+  padding: 0.6rem ;
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.friend-item:hover {
+  background: #e5e7eb;
+}
+
+.friend-item.active {
+  background: #2563eb;
+  color: white;
+}
+
+/* Höger panel – chatt */
+.chat-panel {
+  flex: 1;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+
+
+.chat-bubble {
+  max-width: 70%;
+  background: #ff8800;
+  color: white;
+  padding: 0.5rem 0.7rem;
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
+  align-self: flex-end;
+}
+
+/* skrivfält */
+.chat-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input-row input[type="text"] {
+  flex: 1;
+  padding: 0.6rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 0.95rem;
+}
+
+.chat-input-row button {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chat-input-row button:hover {
+  opacity: 0.9;
+}
+
+.chat-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #6b7280;
+}
+
+
+
+
+
 html, body {
   margin: 0;
   padding: 0;
