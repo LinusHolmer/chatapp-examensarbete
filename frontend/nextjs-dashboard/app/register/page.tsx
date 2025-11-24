@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import "./register.css";
 import { useState } from "react";
+import CustomButton from "../components/CustomButton/CustomButton";
+
 
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
@@ -59,9 +61,8 @@ export default function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={register} type="button">
-          Register
-        </button>
+        <CustomButton buttonText={"Register"} onClick={register} />
+
       </form>
     </main>
   );

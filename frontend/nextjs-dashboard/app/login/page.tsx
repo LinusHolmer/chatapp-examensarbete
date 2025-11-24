@@ -2,6 +2,7 @@
 import { useState } from "react";
 import "./login.css";
 import { useRouter } from "next/navigation";
+import CustomButton from "../components/CustomButton/CustomButton";
 
 
 export default function LoginPage() {
@@ -69,9 +70,8 @@ export default function LoginPage() {
           <label>Remember Me</label>
         </div>
 
-        <button onClick={login} type="button">
-          Login
-        </button>
+        <CustomButton buttonText={"Login"} onClick={login} />
+
       </form>
     </main>
   );

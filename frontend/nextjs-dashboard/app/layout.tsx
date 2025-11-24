@@ -6,6 +6,10 @@ import "./ui/global.css";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import Modal from "./components/modal/modal";
+import CustomButton from "./components/CustomButton/CustomButton";
+
+type ModalType = "add-friends" | "discover-friends" | null;
 
 export default function RootLayout({
   children,
@@ -14,6 +18,13 @@ export default function RootLayout({
 }) {
 
   const [isOpen, setIsOpen] = useState(false); 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+
+  const openModal = (type: ModalType) => {
+    setActiveModal(type);
+    setModalOpen(true);
+  };
 
   return (
     <html lang="en">
@@ -36,18 +47,39 @@ export default function RootLayout({
     <div className={`line ${isOpen ? "open" : ""}`}></div>
   </button>
 
+
+
+
   {/* Menyn som fälls ut */}
   {isOpen && (
     <ul className="mobile-menu">
-      <li><Link href="/add-friends" onClick={() => setIsOpen(false)} >Lägg till vänner</Link></li>
-      <li><Link href="/explore" onClick={() => setIsOpen(false)} >Upptäck
-      </Link></li>
+      <li> <CustomButton buttonText={"Add Friends"} onClick={() => openModal("add-friends")} /></li>
+      <li> <CustomButton buttonText={"Discover Friends"} onClick={() => openModal("discover-friends")} /></li>
     </ul>
   )}
+{/* gör modal dynamisk sen */}
+{modalOpen && (
+  <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+    {activeModal === "add-friends" && (
+      <div>
+        <h2>Add Friends</h2>
+        <p>Here you can add friends.</p>
+      </div>
+    )}
+    {activeModal === "discover-friends" &&(
+      <div>
+        <h2>Discover new friends</h2>
+        <p>Here you can discover new friends</p>
+      </div>
+    )}
+  </Modal>
+)}
+
 </nav>
-
-
-        <main>{children}</main>
+        <main>
+          {children}
+          <div id="modal-root"></div>
+        </main>
       </body>
     </html>
   );
