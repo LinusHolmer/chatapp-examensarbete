@@ -1,9 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
 
 export function proxy(request: NextRequest) {
-    console.log("Proxy for:" , request.nextUrl.pathname)
-    return NextResponse.redirect(new URL('/login', request.url))
+  if (!request.cookies.get("jwt"))
+    return NextResponse.redirect(new URL("/login", request.url));
+
+  return NextResponse.next();
 }
 export const config = {
-    matcher: "/test/:path*",
-}
+  matcher: "/",
+};
