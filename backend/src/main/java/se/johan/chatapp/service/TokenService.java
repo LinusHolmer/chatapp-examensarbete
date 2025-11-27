@@ -1,5 +1,7 @@
 package se.johan.chatapp.service;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -8,6 +10,10 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
+import org.slf4j.Logger ;
+import org.slf4j.LoggerFactory ;
+
+import java.security.KeyPair;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
@@ -16,6 +22,11 @@ import java.util.stream.Collectors;
 public class TokenService {
 
     private final JwtEncoder jwtEncoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(TokenService.class);
+
+    @Autowired
+    private KeyPair keyPair;
 
     @Autowired
     public TokenService(JwtEncoder jwtEncoder) {
@@ -37,6 +48,42 @@ public class TokenService {
                 .claim("scope", scope)
                 .build();
 
+        logger.info("JWT generated successfully for user: {}", authentication.getName());
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
+
+    public String getUsernameFromJwtToken (String token){
+        try{
+            Claims claims = Jwts.parser()
+                    .verifyWith(keyPair.getPublic())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+
+            String username = claims.getSubject();
+            logger.debug("Extracted username '{}' from JWT token", username);
+            return username;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public boolean validateJwtToken (String authToken){
+        try{
+            Jwts.parser()
+                    .verifyWith(keyPair.getPublic())
+                    .build()
+                    .parseSignedClaims(authToken);
+
+            logger.debug("JWT validation succeeded");
+            return true;
+        } catch (Exception e) {
+            logger.error("JWT validation failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
+
+
 }

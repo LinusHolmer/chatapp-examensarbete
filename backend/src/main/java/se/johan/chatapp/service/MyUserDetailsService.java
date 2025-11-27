@@ -25,9 +25,15 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ChatUser chatUser = chatUserRepository.findByUsername(username);
 
-        if(chatUser == null) {
+        if (chatUser == null) {
             throw new UsernameNotFoundException(username);
         }
+
+        List<SimpleGrantedAuthority> authorities =
+                chatUser.getRoles().stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .toList();
+
         return new org.springframework.security.core.userdetails.User(
                 chatUser.getUsername(),
                 chatUser.getPassword(),
@@ -35,7 +41,8 @@ public class MyUserDetailsService implements UserDetailsService {
                 true,
                 true,
                 true,
-                List.of(new SimpleGrantedAuthority("ROLE_" + chatUser.getRoles()))
+                authorities
         );
     }
+
 }
