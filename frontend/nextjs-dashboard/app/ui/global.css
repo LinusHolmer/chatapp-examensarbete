@@ -1,37 +1,49 @@
+/* Gör att sidan har höjd att jobba med */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body > main {
+  max-height: 100%;
+}
 
 /* Layout: vänster lista + höger chatt */
 .chat-layout {
   display: flex;
+  max-height: 100vh;                 
+  padding: 1rem;
   box-sizing: border-box;
 }
 
 /* Vänster panel – vänner */
 .friends-panel {
   width: 260px;
+  max-width: 35%;
   background: #f3f4f6;
   border-radius: 10px;
   padding: 1rem;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+  margin-right: 1rem;
+  max-height: 400px;      
+
+  overflow-y: auto;       
 }
 
-.friends-panel h2 {
-  margin-top: 0;
-  margin-bottom: 0.8rem;
-  font-size: 1.5rem;
-}
 
 .friends-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex: 1;
-  overflow-y: auto;
+
+  flex: 1;                      
+  overflow-y: auto;             
+  padding-right: 4px;          
 }
 
 .friend-item {
-  padding: 0.6rem ;
+  padding: 0.6rem;
   border-radius: 6px;
   margin-bottom: 0.4rem;
   font-size: 0.95rem;
@@ -69,7 +81,6 @@
   padding-right: 0.5rem;
   margin-bottom: 0.8rem;
 }
-
 
 .chat-bubble {
   max-width: 70%;
@@ -116,6 +127,7 @@
   flex: 1;
   color: #6b7280;
 }
+
 
 
 

@@ -16,7 +16,21 @@ export default function HomePage() {
     { id: 3, name: "Sara" },
     { id: 4, name: "Oskar" },
     { id: 5, name: "Maja" },
-    { id: 5, name: "Maja" }
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+    { id: 5, name: "Maja" },
+     
+
     
   ]);
 
