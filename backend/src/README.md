@@ -97,5 +97,17 @@ Lösning:
 Löste problemet genom att använda en preventDefault metod som gör att sidan inte laddas när något ändras.
 Använde en type friend med id: number och name:string för att göra tillfälliga "vänner" för att chatta med så att veta att allt funkar. Gjorde en Array av vänner som vi senare kommer byta.
 
+Skapade en JwtConfig-klass för att lösa cirkulära beroenden, och flyttade JWT-delen från SecurityConfig dit.
+JwtAuthFilter – ett filter för JWT-token, för att kunna ta emot JWT från frontend.
+MyUserDetailsService – metoden som lägger till rollerna fungerade inte korrekt och är nu fixad.
+TokenService – innehåller några JWT-metoder för att hämta användarnamn och validera JWT-token.
+Page.tsx i register – en liten textjustering.
+Testade JwtAuthFilter med Postman, och det fungerade som det ska.
+
+problem: "Circular dependency" problem med Spring, lösning: flyttade dependencies i SecurityConfig, JWT metoder till sin egen klass (JwtConfig).
+problem: Sparade roler i JWT var fel och var pågrund ut av en dålig metod i MyUserDetailsService, var sparat i JWT som "ROLE_[ROLE_USER]" och skulle vara ROLE_USER. 
+Lösning: metoden la till ROLE_USER på ROLE_, ändrade på det så det blev rätt.
+
+
 
 
