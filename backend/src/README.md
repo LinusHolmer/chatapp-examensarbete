@@ -97,6 +97,12 @@ Lösning:
 Löste problemet genom att använda en preventDefault metod som gör att sidan inte laddas när något ändras.
 Använde en type friend med id: number och name:string för att göra tillfälliga "vänner" för att chatta med så att veta att allt funkar. Gjorde en Array av vänner som vi senare kommer byta.
 
+## 2025-11-27
+ 
+Hade problem med att containern med "Vänner" blev större och gick längre ner på sidan om man la till mer vänner.
+ 
+Vi fixade det genom att göra lägga till en scroll funktion så att containern med vänner inte blev större. Om man lägger till mer vänner nu så blir det som en lång lista som man kan scrolla igenom istället.
+
 Skapade en JwtConfig-klass för att lösa cirkulära beroenden, och flyttade JWT-delen från SecurityConfig dit.
 JwtAuthFilter – ett filter för JWT-token, för att kunna ta emot JWT från frontend.
 MyUserDetailsService – metoden som lägger till rollerna fungerade inte korrekt och är nu fixad.
@@ -108,6 +114,7 @@ problem: "Circular dependency" problem med Spring, lösning: flyttade dependenci
 problem: Sparade roler i JWT var fel och var pågrund ut av en dålig metod i MyUserDetailsService, var sparat i JWT som "ROLE_[ROLE_USER]" och skulle vara ROLE_USER. 
 Lösning: metoden la till ROLE_USER på ROLE_, ändrade på det så det blev rätt.
 
++mergade proxy + homePage branch till production, skapade ny branch jwt-stuff för jwtFilter 
 
 
 
