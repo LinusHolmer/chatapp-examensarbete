@@ -87,7 +87,7 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
-                .secure(true)
+                .secure(false) // should be true if using https, but did work?
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
