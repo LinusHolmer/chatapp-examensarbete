@@ -110,7 +110,9 @@ TokenService – innehåller några JWT-metoder för att hämta användarnamn oc
 Page.tsx i register – en liten textjustering.
 Testade JwtAuthFilter med Postman, och det fungerade som det ska.
 
-problem: "Circular dependency" problem med Spring, lösning: flyttade dependencies i SecurityConfig, JWT metoder till sin egen klass (JwtConfig).
+problem: "Circular dependency" problem med Spring, 
+lösning: flyttade dependencies i SecurityConfig, JWT metoder till sin egen klass (JwtConfig).
+
 problem: Sparade roler i JWT var fel och var pågrund ut av en dålig metod i MyUserDetailsService, var sparat i JWT som "ROLE_[ROLE_USER]" och skulle vara ROLE_USER. 
 Lösning: metoden la till ROLE_USER på ROLE_, ändrade på det så det blev rätt.
 
