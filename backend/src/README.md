@@ -81,3 +81,25 @@ Skapade en ny komponent som heter CustomButton, det är den nya standardknappen 
 
 Problem: när man gjorde login/register behövde man klicka knappen två gånger, lösning: type="button" på knappen
 
+
+## 2025-11-24
+
+Ändrade våran homepage till en sida där man kan se alla sina vänner och chattar. Det går att se sina tillagda vänner i ett "vänner" fält och sen klicka på valfri vän. När man klickar på vännen så ser man ett chatt-fält på högersidan där man kan skriva. När man skickar något så visas meddelandet i en orange chatt-bubbla.
+
+Använde många useState för att välja vilken vän som man vill skicka till, vad man skriver i chattrutan, skicka meddelande.
+Skrev också väldigt mycket css för att få sidan som vi vill att den ska se ut. Använde mycket flexbox för att då blir det enklare ifall vi vill göra våran sida responsiv och jag tycker att flexbox är bättre och mindre kod.
+
+Problem:
+
+Hade problem med att sidan alltid laddades om efter jag skickat ett meddelande.
+
+Visste inte hur jag kunda prova nya chatten utan att våran "lägg till vänner" är kopplad och att det inte finns några tillagda vänner i databasen.
+
+Lösning:
+
+Löste problemet genom att använda en preventDefault metod som gör att sidan inte laddas när något ändras.
+
+Använde en type friend med id: number och name:string för att göra tillfälliga "vänner" för att chatta med så att veta att allt funkar. Gjorde en Array av vänner som vi senare kommer byta.
+
+
+
