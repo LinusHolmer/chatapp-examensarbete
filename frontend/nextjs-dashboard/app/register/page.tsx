@@ -4,14 +4,12 @@ import "./register.css";
 import { useState } from "react";
 import CustomButton from "../components/CustomButton/CustomButton";
 
-
 export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-    const router = useRouter();
-
+  const router = useRouter();
 
   const register = async () => {
     setError(null);
@@ -33,11 +31,8 @@ export default function RegisterPage() {
 
       setSuccess(true);
 
-        alert("Successfully logged in!")
-        router.push('/login')
-
-    
-
+      alert("Successfully registered!");
+      router.push("/login");
     } catch (error) {
       setError("Network error: backend unreachable");
     }
@@ -62,7 +57,6 @@ export default function RegisterPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <CustomButton buttonText={"Register"} onClick={register} />
-
       </form>
     </main>
   );
