@@ -1,12 +1,13 @@
 package se.johan.chatapp.service;
 
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.web.server.ResponseStatusException;
 import se.johan.chatapp.dto.MessageRequest;
 import se.johan.chatapp.dto.SentMessageDTO;
 import se.johan.chatapp.model.ChatUser;
@@ -19,26 +20,23 @@ import java.util.*;
 
 @Service
 public class MessageService {
-
     private final ChatUserRepository chatUserRepository;
     private final MessageRepository messageRepository;
-    private final PasswordEncoder passwordEncoder;
     private final MongoTemplate mongoTemplate;
 
 
-    public MessageService(ChatUserRepository chatUserRepository, MessageRepository messageRepository, PasswordEncoder passwordEncoder, MongoTemplate mongoTemplate) {
+    public MessageService(ChatUserRepository chatUserRepository, MessageRepository messageRepository, MongoTemplate mongoTemplate) {
         this.chatUserRepository = chatUserRepository;
         this.messageRepository = messageRepository;
-        this.passwordEncoder = passwordEncoder;
         this.mongoTemplate = mongoTemplate;
     }
 
-    public Message sendMessage(String username, String rawPassword, String body, String receiver) {
+    public Message sendMessage(String username, String body, String receiver) {
         // Hämta avsändaren
         ChatUser sender = chatUserRepository.findByUsername(username);
 
-        if (sender == null || !passwordEncoder.matches(rawPassword, sender.getPassword())) {
-            throw new IllegalArgumentException("Fel användarnamn eller lösenord");
+        if(sender == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         // Hämta mottagaren
@@ -57,14 +55,14 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
+    public Optional<Message> deleteMessage(String username, String receiver){
 
-    public Optional<Message> deleteMessage(String username, String rawPassword, String receiver){
-        ChatUser user = chatUserRepository.findByUsername(username);
+        ChatUser sender = chatUserRepository.findByUsername(username);
 
-        //kollar om användare finns och om lösenordet matchar hashat lösenord
-        if(user == null || !passwordEncoder.matches(rawPassword, user.getPassword())){
-            return Optional.empty();
+        if(sender == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+
         //bygger mongodb query, sender = username, receiver = receiver
         Query q = new Query(Criteria.where("sender").is(username).and("receiver").is(receiver));
 
@@ -81,11 +79,12 @@ public class MessageService {
         return Optional.ofNullable(removed);
     }
 
-
-    public List<MessageRequest> viewMessages(String username, String password) {
+    public List<MessageRequest> viewMessages(String username) {
         ChatUser user = chatUserRepository.findByUsername(username);
 
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+        if (user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
             List<Message> messages = messageRepository.findByReceiverOrderByTimestampDesc(user.getUsername());
 
             List<MessageRequest> result = new ArrayList<>();
@@ -95,15 +94,15 @@ public class MessageService {
                 result.add(dto);
             }
             return result;
-        }
-        return Collections.emptyList();
     }
 
 
-    public List<SentMessageDTO> viewSentMessages(String username, String password) {
+    public List<SentMessageDTO> viewSentMessages(String username) {
         ChatUser user = chatUserRepository.findByUsername(username);
 
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+        if (user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
             List<Message> messages = messageRepository.findBySenderOrderByTimestampDesc(user.getUsername());
             List<SentMessageDTO> result = new ArrayList<>();
 
@@ -116,14 +115,5 @@ public class MessageService {
                 result.add(dto);
             }
             return result;
-        }
-        return Collections.emptyList();
     }
-
-
-
-
-
-
 }
-

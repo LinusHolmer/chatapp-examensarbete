@@ -1,16 +1,15 @@
 package se.johan.chatapp.controller;
 
-
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import se.johan.chatapp.dto.MessageRequest;
 import se.johan.chatapp.dto.SendMessageRequest;
 import se.johan.chatapp.dto.SentMessageDTO;
-import se.johan.chatapp.dto.ViewMessagesDTO;
 import se.johan.chatapp.model.Message;
-import se.johan.chatapp.repository.MessageRepository;
 import se.johan.chatapp.service.MessageService;
 
 import java.util.List;
@@ -22,19 +21,16 @@ import java.util.Optional;
 public class MessageController {
 
     private final MessageService messageService;
-    private final MessageRepository messageRepository;
-
-    public MessageController(MessageService messageService, MessageRepository messageRepository) {
+    @Autowired
+    public MessageController(MessageService messageService) {
         this.messageService = messageService;
-        this.messageRepository = messageRepository;
     }
 
     @PostMapping("/sendNew")
-    public ResponseEntity<?> sendNewMessage(@Valid @RequestBody SendMessageRequest request) {
+    public ResponseEntity<?> sendNewMessage(Authentication auth, @Valid @RequestBody SendMessageRequest request) {
         try {
             messageService.sendMessage(
-                    request.username(),
-                    request.password(),
+                    auth.getName(),
                     request.body(),
                     request.receiver()
             );
@@ -48,15 +44,10 @@ public class MessageController {
         }
     }
 
-
-
-
-
     @DeleteMapping("/deleteLatest")
-    public ResponseEntity<Void> deleteLatestMessage(@RequestBody SendMessageRequest request) {
+    public ResponseEntity<Void> deleteLatestMessage(Authentication auth, @Valid @RequestBody SendMessageRequest request) {
         Optional<Message> deleted = messageService.deleteMessage(
-                request.username(),
-                request.password(),
+                auth.getName(),
                 request.receiver()
         );
 
@@ -69,37 +60,20 @@ public class MessageController {
         }
     }
 
-
     @GetMapping("/viewMessages")
-    public ResponseEntity<?> viewMessages(@RequestBody ViewMessagesDTO request) {
+    public ResponseEntity<?> viewMessages(Authentication auth) {
         List<MessageRequest> messages = messageService.viewMessages(
-                request.username(),
-                request.password()
+                auth.getName()
         );
-
-        if (messages == null) {
-            return ResponseEntity.status(401).body("Fel användarnamn eller lösenord");
-        } else if (messages.isEmpty()) {
-            return ResponseEntity.ok("Inga meddelanden att visa");
-        } else {
             return ResponseEntity.ok(messages);
-        }
     }
 
     @GetMapping("/viewSentMessages")
-    public ResponseEntity<?> viewSentMessages(@RequestBody ViewMessagesDTO request) {
+    public ResponseEntity<?> viewSentMessages(Authentication auth) {
         List<SentMessageDTO> messages = messageService.viewSentMessages(
-                request.username(),
-                request.password()
+                auth.getName()
         );
-
-        if (messages == null) {
-            return ResponseEntity.status(401).body("Fel användarnamn eller lösenord");
-        } else if (messages.isEmpty()) {
-            return ResponseEntity.ok("Inga meddelanden att visa");
-        } else {
             return ResponseEntity.ok(messages);
-        }
     }
 }
 

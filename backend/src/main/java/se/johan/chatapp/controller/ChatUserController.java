@@ -1,14 +1,12 @@
 package se.johan.chatapp.controller;
 
-
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.johan.chatapp.dto.AddFriendRequest;
-import se.johan.chatapp.dto.RegisterRequest;
 import se.johan.chatapp.model.ChatUser;
-import se.johan.chatapp.repository.ChatUserRepository;
 import se.johan.chatapp.service.ChatUserService;
 
 
@@ -18,27 +16,25 @@ import java.util.List;
 @RequestMapping("/chatUser")
 public class ChatUserController {
     private final ChatUserService service;
-    private final ChatUserRepository chatUserRepository;
 
-    public ChatUserController(ChatUserService service, ChatUserRepository chatUserRepository) {
+    @Autowired
+    public ChatUserController(ChatUserService service) {
         this.service = service;
-        this.chatUserRepository = chatUserRepository;
     }
 
     @PutMapping("/addFriend")
-    public ResponseEntity<ChatUser> addFriend(@Valid @RequestBody AddFriendRequest addFriendRequest) {
-        ChatUser updatedUser = service.addFriendService(addFriendRequest);
-        return ResponseEntity.ok(updatedUser);
+    public ResponseEntity<ChatUser> addFriend(Authentication auth, @Valid @RequestBody AddFriendRequest addFriendRequest) {
+        return ResponseEntity.ok(service.addFriendService(addFriendRequest, auth.getName()));
     }
 
     @GetMapping("/getFriends")
-    public ResponseEntity<List<String>> getFriends(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(service.getFriendsService(registerRequest));
+    public ResponseEntity<List<String>> getFriends(Authentication auth) {
+        return ResponseEntity.ok(service.getFriendsService(auth.getName()));
     }
 
     @GetMapping("/discover")
-    public ResponseEntity<List<String>> discoverUsers(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(service.discoverService(registerRequest));
+    public ResponseEntity<List<String>> discoverUsers(Authentication auth) {
+        return ResponseEntity.ok(service.discoverService(auth.getName()));
     }
 
 }

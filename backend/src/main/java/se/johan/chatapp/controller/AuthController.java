@@ -10,19 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.johan.chatapp.dto.RegisterDTO;
 import se.johan.chatapp.dto.RegisterRequest;
-import se.johan.chatapp.model.ChatUser;
 import se.johan.chatapp.service.ChatUserService;
 import se.johan.chatapp.service.TokenService;
-
-import java.security.KeyPair;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Base64;
 
 @RestController
 public class AuthController {
@@ -36,16 +30,6 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
         this.service = service;
-    }
-
-    @Autowired
-    private KeyPair keyPair;
-
-
-    @GetMapping("/public-key")
-    public String getPublicKey(){
-        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-        return Base64.getEncoder().encodeToString(publicKey.getEncoded());
     }
 
     @PostMapping("/register")
