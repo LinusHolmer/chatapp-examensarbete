@@ -118,5 +118,22 @@ Lösning: metoden la till ROLE_USER på ROLE_, ändrade på det så det blev rä
 
 +mergade proxy + homePage branch till production, skapade ny branch jwt-stuff för jwtFilter 
 
+## 2025-12-01
+mergade nya JWT metoder + klasser till production.
+Vi måste lägga mer tid på slutprojekt i JavaEE så inte så mycket mer kommer göras.
 
+AuthController – tog bort public-key-endpointen, vi autentiserar nu JWT i backend + tog bort oanvända imports.
+
+ChatUserController – tog bort användning av DTO:er där JWT kan användas i stället (så inget mer användarnamn och lösenord i RequestBody).
+
+MessageController – samma som ovan + tog bort if-satser som var onödiga.
+
+DTO-klasser – tog bort onödiga variabler som användarnamn och lösenord + tog bort ViewMessagesDTO (användes inte).
+
+ChatUserService – tog bort metoden authUser (JWT gör den överflödig), uppdaterade metoder för att använda användarnamn från auth.getName(), lade till null-kontroller + ingen lösenordshantering längre.
+
+MessageService – samma som ovan, förutom authUser-metoden.
+
+problem: När vi först gjorde om controllerna så manuellt validerade vi jwt token i service lagret, vilket man kan göra men det finns bättre sätt vilket gör så du uppnår DRY också.
+lösning: I spring så finns det en Authentication klass som du kan använda i controllern, som automatiskt validerar och minskar mängden kod. Istället för att behöva manuellt validera jwt och hämta username från jwt så kan man bara göra auth.getName(), med "Authentication auth" i parameter i controller, DRY!
 
