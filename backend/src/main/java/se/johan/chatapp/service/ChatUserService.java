@@ -1,7 +1,7 @@
 package se.johan.chatapp.service;
 
-
 import com.mongodb.DuplicateKeyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,25 +24,11 @@ public class ChatUserService {
     private final PasswordEncoder passwordEncoder;
 
 
+    @Autowired
     public ChatUserService(ChatUserRepository chatUserRepository, PasswordEncoder passwordEncoder) {
         this.chatUserRepository = chatUserRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
-    private ChatUser authenticateUser(String username, String password) {
-        ChatUser chatUser = chatUserRepository.findByUsername(username);
-
-        if (chatUser == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-
-        if (!passwordEncoder.matches(password, chatUser.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Wrong password");
-        }
-
-        return chatUser;
-    }
-
 
     //Kollar först om det finns en användare med samma namn i databasen
 
@@ -52,7 +38,6 @@ public class ChatUserService {
         }
 
         //Skapar ny ChatUser, sätter lösenord och username och hashar lösenord innan det sparas med .encode
-
         ChatUser chatUser = new ChatUser();
         chatUser.setUsername(registerRequest.username());
         chatUser.setPassword(passwordEncoder.encode(registerRequest.password()));
@@ -68,56 +53,68 @@ public class ChatUserService {
         }
     }
 
-    public ChatUser addFriendService(AddFriendRequest addFriendRequest) {
-        ChatUser chatUser = authenticateUser(addFriendRequest.username(), addFriendRequest.password());
+    public ChatUser addFriendService(AddFriendRequest addFriendRequest, String username) {
 
+        ChatUser chatUser = chatUserRepository.findByUsername(username);
         ChatUser friend = chatUserRepository.findByUsername(addFriendRequest.friendUsername());
-        if (friend == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend not found");
+
+        // skaffa advice klass för alla
+        if (chatUser == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
+
+        if (friend == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend not found");
+            }
 
         if (chatUser.getUsername().equals(friend.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot add yourself as a friend");
-        }
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot add yourself as a friend");
+            }
 
         if (chatUser.getFriendList().contains(friend.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "User is already your friend");
-        }
-        chatUser.getFriendList().add(friend.getUsername());
-        return chatUserRepository.save(chatUser);
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "User is already your friend");
+            }
+            chatUser.getFriendList().add(friend.getUsername());
+            return chatUserRepository.save(chatUser);
     }
 
+    public List<String> getFriendsService(String username) {
+            ChatUser chatUser = chatUserRepository.findByUsername(username);
 
-    public List<String> getFriendsService(RegisterRequest registerRequest) {
-        ChatUser chatUser = authenticateUser(registerRequest.username(), registerRequest.password());
-        return chatUser.getFriendList();
-    }
-
-
-    public List<String> discoverService(RegisterRequest registerRequest) {
-        ChatUser chatUser = authenticateUser(registerRequest.username(), registerRequest.password());
-
-        List<String> userDiscovered = chatUserRepository.findAllBy()
-                .stream()
-                .map(UsernameOnly::getUsername)
-                .filter(username -> username != null)
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        userDiscovered.remove(chatUser.getUsername());
-        userDiscovered.removeAll(chatUser.getFriendList());
-
-        Collections.shuffle(userDiscovered);
-        int maxSize = 10;
-        if (userDiscovered.size() > maxSize) {
-            userDiscovered.subList(maxSize, userDiscovered.size()).clear();
+            if(chatUser == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
+            return chatUser.getFriendList();
         }
 
-        return userDiscovered;
+        // bytte till chatUsername annars blev discover metoden sur
+    public List<String> discoverService(String chatUsername) {
+            ChatUser chatUser = chatUserRepository.findByUsername(chatUsername);
+
+            if(chatUser == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
+
+            List<String> userDiscovered = chatUserRepository.findAllBy()
+                    .stream()
+                    .map(UsernameOnly::getUsername)
+                    .filter(username -> username != null)
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            userDiscovered.remove(chatUser.getUsername());
+            userDiscovered.removeAll(chatUser.getFriendList());
+
+            Collections.shuffle(userDiscovered);
+            int maxSize = 10;
+            if (userDiscovered.size() > maxSize) {
+                userDiscovered.subList(maxSize, userDiscovered.size()).clear();
+            }
+            return userDiscovered;
     }
-
-
-
 }
+
+
+
 
 
 
