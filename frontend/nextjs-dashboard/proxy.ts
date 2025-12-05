@@ -26,7 +26,7 @@ export async function proxy(request: NextRequest) {
   const data = await response.json();
 
 
-  console.log(data)
+  // console.log(data)
 
   if(request.nextUrl.pathname.startsWith("/") && !data == (true)) {
     return NextResponse.redirect(new URL("/login", request.url))
