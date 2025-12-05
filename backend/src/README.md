@@ -130,10 +130,37 @@ MessageController – samma som ovan + tog bort if-satser som var onödiga.
 
 DTO-klasser – tog bort onödiga variabler som användarnamn och lösenord + tog bort ViewMessagesDTO (användes inte).
 
-ChatUserService – tog bort metoden authUser (JWT gör den överflödig), uppdaterade metoder för att använda användarnamn från auth.getName(), lade till null-kontroller + ingen lösenordshantering längre.
+ChatUserService – tog bort metoden authUser (JWT gör den onödig), uppdaterade metoder för att använda användarnamn från auth.getName(), lade till null-kontroller + ingen lösenordshantering längre.
 
 MessageService – samma som ovan, förutom authUser-metoden.
 
 problem: När vi först gjorde om controllerna så manuellt validerade vi jwt token i service lagret, vilket man kan göra men det finns bättre sätt vilket gör så du uppnår DRY också.
 lösning: I spring så finns det en Authentication klass som du kan använda i controllern, som automatiskt validerar och minskar mängden kod. Istället för att behöva manuellt validera jwt och hämta username från jwt så kan man bara göra auth.getName(), med "Authentication auth" i parameter i controller, DRY!
+
+## 2025-12-05
+
+ADD: Servicemetoder, några loggers
+Lade till servicemetoder och några loggers.
+Flyttade logik i controllern i login- och logout-metoderna till egna metoder i servicelagret.
+Några loggers för servicemetoder.
+Ändrade även vissa returtyper som tidigare returnerade entiteter till void.
+
+FIX: addFriendService
+Fixade att addFriendService returnerade en entitet när den inte behövde returnera något.
+
+FIX: MessageController
+MessageController – flyttade try-catch till servicelagret.
+
+ADD: auth-endpoint + logger
+AuthController – auth-endpoint som returnerar true eller false beroende på om JWT är giltig eller inte.
+
+proxy.ts – fetch-anrop som kontrollerar auth-svaret; om det är false kan du inte lämna login-sidan, men om det är true får du åtkomst till startsidan.
+
+ADD: ändringar i navbar + module.css
+Gjorde ändringarna i navbaren i layouten så att de endast visas på huvudsidan, annars hade de även visats på login- och register-sidorna.
+
+Skapade en .module.css för login (kommer göra en för register och logout också). Det fixar en bugg där CSS annars följer med när man loggar in och omdirigeras till startsidan – med .module händer inte detta.
+
+problem: proxy.ts hur man ska autentisera sig med backend och varför vår fetch inte funkar.
+lösning: skapade en auth endpoint i AuthControllern som validerar din jwt och returnar boolean värde till frontend, felet på vår fetch var att i vårt JWTFilter så behövdes headern "Authorization" finnas med och "Bearer <jwt>" annars går det inte igenom, så vi behövde manuellt sätta headern till det.
 
