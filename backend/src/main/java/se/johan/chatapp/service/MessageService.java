@@ -4,6 +4,7 @@ package se.johan.chatapp.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -35,7 +36,10 @@ public class MessageService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public Message sendMessage(String username, String body, String receiver) {
+    public void sendMessage(String username, String body, String receiver) {
+
+        try{
+
         // Hämta avsändaren
         ChatUser sender = chatUserRepository.findByUsername(username);
 
@@ -57,8 +61,12 @@ public class MessageService {
         message.setTimestamp(LocalDateTime.now());
 
         logger.info("{} sent a message to {}", sender.getUsername(), receiverUser.getUsername());
-
-        return messageRepository.save(message);
+        messageRepository.save(message);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Du saknar behörighet eller är inte inloggad");
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mottagaren finns inte");
+        }
     }
 
     public Optional<Message> deleteMessage(String username, String receiver){

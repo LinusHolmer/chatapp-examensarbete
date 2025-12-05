@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import se.johan.chatapp.dto.MessageRequest;
 import se.johan.chatapp.dto.SendMessageRequest;
 import se.johan.chatapp.dto.SentMessageDTO;
@@ -28,20 +29,12 @@ public class MessageController {
 
     @PostMapping("/sendNew")
     public ResponseEntity<?> sendNewMessage(Authentication auth, @Valid @RequestBody SendMessageRequest request) {
-        try {
             messageService.sendMessage(
                     auth.getName(),
                     request.body(),
                     request.receiver()
             );
-
             return ResponseEntity.status(HttpStatus.CREATED).build();
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Fel användarnamn eller lösenord");
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mottagaren finns inte");
-        }
     }
 
     @DeleteMapping("/deleteLatest")
