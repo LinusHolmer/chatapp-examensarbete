@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import se.johan.chatapp.dto.RegisterRequest;
 import se.johan.chatapp.service.ChatUserService;
 
@@ -30,8 +29,6 @@ public class AuthController {
                 .status(HttpStatus.CREATED)
                 .build();
     }
-
-
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody RegisterRequest registerRequest) {
         return ResponseEntity.ok()
@@ -43,6 +40,13 @@ public class AuthController {
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         response.addHeader(HttpHeaders.SET_COOKIE, service.logoutUser().toString());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/auth")
+    public boolean auth(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+
+        String jwt =  authHeader.replace("Bearer ", "");
+        return service.authCheck(jwt);
     }
 
 }

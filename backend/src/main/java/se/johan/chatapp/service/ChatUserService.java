@@ -159,6 +159,18 @@ public class ChatUserService {
         logger.info("Successfully logged out user");
         return cookie;
     }
+
+    public boolean authCheck(String jwt){
+
+        if(jwt==null || jwt.isEmpty()){
+            return false;
+        }
+
+        boolean check = tokenService.validateJwtToken(jwt);
+        logger.info("Auth Returned: {}", check);
+        return check;
+    }
+
 }
 
 

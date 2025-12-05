@@ -41,6 +41,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain
         ) throws ServletException, IOException {
 
+        logger.info("Incoming request: {} {}" , request.getMethod(), request.getRequestURI ());
+
         String token = extractJwtFromCookie(request);
         if(token == null) {
             token = extractJwtFromRequest(request); // fallback to Authorization header
@@ -77,6 +79,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+        logger.info("Outgoing response: status={}" , response.getStatus());
         logger.debug("---- JwtAuthenticationFilter END ----");
 
     }
