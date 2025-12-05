@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import "./ui/global.css";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import Modal from "./components/modal/modal";
+import CustomButton from "./components/CustomButton/CustomButton";
+
+type ModalType = "add-friends" | "discover-friends" | null;
+
 
 type Friend = {
   id: number;
@@ -9,6 +16,16 @@ type Friend = {
 };
 
 export default function HomePage() {
+
+  const [isOpen, setIsOpen] = useState(false); 
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeModal, setActiveModal] = useState<ModalType>(null);
+  
+    const openModal = (type: ModalType) => {
+      setActiveModal(type);
+      setModalOpen(true);
+    };
+
   // exempel på vänner för att kolla så det funkar
   const [friends] = useState<Friend[]>([
     { id: 1, name: "Anna" },
@@ -49,66 +66,108 @@ export default function HomePage() {
   };
 
   return (
-    // Huvudlayouten: vänster lista + höger chatt
+    <><nav className="navbar">
+      <Link href="/" className="nav-logo">
+        <Image
+          src="/logo.png"
+          alt="Logo"
+          width={200}
+          height={200}
+          priority />
+      </Link>
 
-    <main className="chat-layout">
+      {/* Hamburgar meny-knapp */}
+      <button className="hamburger" onClick={() => setIsOpen(!isOpen)}>
+        <div className={`line ${isOpen ? "open" : ""}`}></div>
+        <div className={`line ${isOpen ? "open" : ""}`}></div>
+        <div className={`line ${isOpen ? "open" : ""}`}></div>
+      </button>
 
-      {/* vänster: vänner + scroll */}
-
-      <aside className="friends-panel">
-        <h2>Vänner</h2>
-
-        {/* Listan som visas med scroll om den blir lång */}
-        <ul className="friends-list">
-          {friends.map((friend) => (
-            <li
-              key={friend.id}
-              className={
-                selectedFriend?.id === friend.id ? "friend-item active" : "friend-item"
-              }
-              onClick={() => setSelectedFriend(friend)}
-            >
-              {friend.name}
-            </li>
-          ))}
+      {/* Menyn som fälls ut */}
+      {isOpen && (
+        <ul className="mobile-menu">
+          <li> <CustomButton buttonText={"Add Friends"} onClick={() => openModal("add-friends")} /></li>
+          <li> <CustomButton buttonText={"Discover Friends"} onClick={() => openModal("discover-friends")} /></li>
         </ul>
-      </aside>
+      )}
 
-      {/* Höger chatt meed vald vän */}
-
-      <section className="chat-panel">
-        {/* Om en vän är vald, visa chatten */}
-        {selectedFriend ? (
-          <>
-            <header className="chat-header">
-              <h2>Chatt med {selectedFriend.name}</h2>
-            </header>
-
-            {/* Meddelandebubbla som visas i chatt med vän*/}
-            <div className="chat-messages">
-              {(chatLog[selectedFriend.id] ?? []).map((m, i) => (
-                <div key={i} className="chat-bubble">
-                  {m}
-                </div>
-              ))}
+      {/* gör modal dynamisk sen */}
+      {modalOpen && (
+        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+          {activeModal === "add-friends" && (
+            <div>
+              <h2>Add Friends</h2>
+              <p>Here you can add friends.</p>
             </div>
+          )}
+          {activeModal === "discover-friends" && (
+            <div>
+              <h2>Discover new friends</h2>
+              <p>Here you can discover new friends</p>
+            </div>
+          )}
+        </Modal>
+      )}
 
-            <form onSubmit={handleSend} className="chat-input-row">
-              <input
-                type="text"
-                placeholder={`Skriv till ${selectedFriend.name}...`}
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <button type="submit">Skicka</button>
-            </form>
-          </>
-        ) : (
-          <div className="chat-empty">
-            <p>Välj en vän till vänster för att börja chatta</p>
-          </div>
-        )}
-      </section>
-    </main>
+    </nav>
+      
+      
+      <main className="chat-layout">
+
+        {/* vänster: vänner + scroll */}
+
+        <aside className="friends-panel">
+          <h2>Vänner</h2>
+
+          {/* Listan som visas med scroll om den blir lång */}
+          <ul className="friends-list">
+            {friends.map((friend) => (
+              <li
+                key={friend.id}
+                className={selectedFriend?.id === friend.id ? "friend-item active" : "friend-item"}
+                onClick={() => setSelectedFriend(friend)}
+              >
+                {friend.name}
+              </li>
+            ))}
+          </ul>
+        </aside>
+
+        {/* Höger chatt meed vald vän */}
+
+        <section className="chat-panel">
+          {/* Om en vän är vald, visa chatten */}
+          {selectedFriend ? (
+            <>
+              <header className="chat-header">
+                <h2>Chatt med {selectedFriend.name}</h2>
+              </header>
+
+              {/* Meddelandebubbla som visas i chatt med vän*/}
+              <div className="chat-messages">
+                {(chatLog[selectedFriend.id] ?? []).map((m, i) => (
+                  <div key={i} className="chat-bubble">
+                    {m}
+                  </div>
+                ))}
+              </div>
+
+              <form onSubmit={handleSend} className="chat-input-row">
+                <input
+                  type="text"
+                  placeholder={`Skriv till ${selectedFriend.name}...`}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)} />
+                <button type="submit">Skicka</button>
+              </form>
+            </>
+          ) : (
+            <div className="chat-empty">
+              <p>Välj en vän till vänster för att börja chatta</p>
+            </div>
+          )}
+        </section>
+        <div id="modal-root"></div>
+      </main></>
   );
 }
