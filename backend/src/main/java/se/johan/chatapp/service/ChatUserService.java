@@ -66,7 +66,7 @@ public class ChatUserService {
         }
     }
 
-    public ChatUser addFriendService(AddFriendRequest addFriendRequest, String username) {
+    public void addFriendService(AddFriendRequest addFriendRequest, String username) {
 
         ChatUser chatUser = chatUserRepository.findByUsername(username);
         ChatUser friend = chatUserRepository.findByUsername(addFriendRequest.friendUsername());
@@ -88,7 +88,7 @@ public class ChatUserService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "User is already your friend");
             }
             chatUser.getFriendList().add(friend.getUsername());
-            return chatUserRepository.save(chatUser);
+            chatUserRepository.save(chatUser);
     }
 
     public List<String> getFriendsService(String username) {

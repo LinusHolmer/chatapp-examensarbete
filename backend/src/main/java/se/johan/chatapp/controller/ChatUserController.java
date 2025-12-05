@@ -24,7 +24,8 @@ public class ChatUserController {
 
     @PutMapping("/addFriend")
     public ResponseEntity<ChatUser> addFriend(Authentication auth, @Valid @RequestBody AddFriendRequest addFriendRequest) {
-        return ResponseEntity.ok(service.addFriendService(addFriendRequest, auth.getName()));
+        service.addFriendService(addFriendRequest, auth.getName());
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/getFriends")
