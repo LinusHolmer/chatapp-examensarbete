@@ -1,8 +1,14 @@
 package se.johan.chatapp.service;
 
 import com.mongodb.DuplicateKeyException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,17 +28,23 @@ import java.util.stream.Collectors;
 public class ChatUserService {
     private final ChatUserRepository chatUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
+    private final AuthenticationManager authenticationManager;
+
+    private final static Logger logger = LoggerFactory.getLogger(ChatUserService.class);
 
 
     @Autowired
-    public ChatUserService(ChatUserRepository chatUserRepository, PasswordEncoder passwordEncoder) {
+    public ChatUserService(ChatUserRepository chatUserRepository, PasswordEncoder passwordEncoder, TokenService tokenService, AuthenticationManager authenticationManager) {
         this.chatUserRepository = chatUserRepository;
         this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
+        this.authenticationManager = authenticationManager;
     }
 
     //Kollar först om det finns en användare med samma namn i databasen
 
-    public ChatUser registerUser(RegisterRequest registerRequest) {
+    public void registerUser(RegisterRequest registerRequest) {
         if (chatUserRepository.findByUsername(registerRequest.username()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
         }
@@ -45,7 +57,8 @@ public class ChatUserService {
 
         try {
             //sparar användaren
-            return chatUserRepository.save(chatUser);
+            logger.info("Successfully registered user {}", registerRequest.username());
+            chatUserRepository.save(chatUser);
 
             //Dubbelkollar att 2 användare inte skrivit in samma namn samtidigt
         } catch (DuplicateKeyException e) {
@@ -110,6 +123,41 @@ public class ChatUserService {
                 userDiscovered.subList(maxSize, userDiscovered.size()).clear();
             }
             return userDiscovered;
+    }
+
+    public ResponseCookie loginUser(RegisterRequest registerRequest) {
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        registerRequest.username(),
+                        registerRequest.password()
+                )
+        );
+
+        String token = tokenService.generateToken(auth);
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                .httpOnly(true)
+                .secure(false) // should be true if using https
+                .path("/")
+                .maxAge(60 * 60)
+                .sameSite("Strict")
+                .build();
+        logger.info("Successfully logged in user: {}", registerRequest.username());
+        return cookie;
+
+    }
+
+    public ResponseCookie logoutUser() {
+        ResponseCookie cookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+                .secure(false) // should be true if using https, but did work?
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+        //vet inte hur jag ska få in username, Authentication auth blev null
+        logger.info("Successfully logged out user");
+        return cookie;
     }
 }
 

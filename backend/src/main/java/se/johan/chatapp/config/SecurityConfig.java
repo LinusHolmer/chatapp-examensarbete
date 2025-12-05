@@ -92,5 +92,3 @@ public class SecurityConfig {
         return authenticationConverter;
     }
 }
-
-

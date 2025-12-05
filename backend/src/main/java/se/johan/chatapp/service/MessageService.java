@@ -1,6 +1,8 @@
 package se.johan.chatapp.service;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
@@ -23,6 +25,8 @@ public class MessageService {
     private final ChatUserRepository chatUserRepository;
     private final MessageRepository messageRepository;
     private final MongoTemplate mongoTemplate;
+
+    private final static Logger logger = LoggerFactory.getLogger(MessageService.class);
 
 
     public MessageService(ChatUserRepository chatUserRepository, MessageRepository messageRepository, MongoTemplate mongoTemplate) {
@@ -52,6 +56,8 @@ public class MessageService {
         message.setReceiver(receiverUser.getUsername());
         message.setTimestamp(LocalDateTime.now());
 
+        logger.info("{} sent a message to {}", sender.getUsername(), receiverUser.getUsername());
+
         return messageRepository.save(message);
     }
 
@@ -76,6 +82,7 @@ public class MessageService {
 
 
         //returnera raderat meddelande eller tomt optional
+        logger.info("Successfully removed a message from {}", sender.getUsername());
         return Optional.ofNullable(removed);
     }
 
