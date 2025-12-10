@@ -3,7 +3,6 @@ package se.johan.chatapp.jwt;
 import com.mongodb.lang.NonNull;
 import jakarta.servlet.FilterChain ;
 import jakarta.servlet.ServletException ;
-import jakarta.servlet.http.Cookie ;
 import jakarta.servlet.http.HttpServletRequest ;
 import jakarta.servlet.http.HttpServletResponse ;
 import org.slf4j.Logger ;
@@ -16,11 +15,12 @@ import org.springframework.security.core.userdetails.UserDetails ;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource ;
 import org.springframework.stereotype. Component;
 import org.springframework.web.filter.OncePerRequestFilter ;
+import se.johan.chatapp.repository.ChatUserRepository;
 import se.johan.chatapp.service.MyUserDetailsService;
 import se.johan.chatapp.service.TokenService;
 
 import java.io.IOException ;
-
+import java.time.Instant;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -28,38 +28,46 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final MyUserDetailsService myUserDetailsService;
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
+    private final ChatUserRepository chatUserRepository;
 
     @Autowired
-    public JwtAuthFilter(TokenService tokenService, MyUserDetailsService myUserDetailsService) {
+    public JwtAuthFilter(TokenService tokenService, MyUserDetailsService myUserDetailsService, ChatUserRepository chatUserRepository) {
         this.tokenService = tokenService;
         this.myUserDetailsService = myUserDetailsService;
+        this.chatUserRepository = chatUserRepository;
     }
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain
-        ) throws ServletException, IOException {
+    ) throws ServletException, IOException {
 
-        logger.info("Incoming request: {} {}" , request.getMethod(), request.getRequestURI ());
+        logger.info("Incoming request: {} {}" , request.getMethod(), request.getRequestURI());
 
-        String token = extractJwtFromCookie(request);
-        if(token == null) {
-            token = extractJwtFromRequest(request); // fallback to Authorization header
-        }
-
+        String token = extractJwtFromRequest(request);
         if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if(tokenService.validateJwtToken(token)) {
+        if (tokenService.validateJwtToken(token)) {
             String username = tokenService.getUsernameFromJwtToken(token);
 
-            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
 
-                if(userDetails != null && userDetails.isEnabled()) {
+                if (userDetails != null && userDetails.isEnabled()) {
+
+                    Instant tokenLastPasswordChange = tokenService.getLastPasswordChangeFromToken(token);
+                    Instant userLastPasswordChange = chatUserRepository.findByUsername(username).getLastPasswordChange();
+
+                    if (tokenLastPasswordChange.isBefore(userLastPasswordChange)) {
+                        logger.warn("JWT token is expired due to password change for user '{}'", username);
+                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired due to password change");
+                        return;
+                    }
+
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
@@ -76,22 +84,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         } else {
             logger.warn("Invalid JWT token");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired JWT");
+            return;
         }
 
         filterChain.doFilter(request, response);
         logger.info("Outgoing response: status={}" , response.getStatus());
         logger.debug("---- JwtAuthenticationFilter END ----");
-
-    }
-
-    private String extractJwtFromCookie(HttpServletRequest request) {
-        if (request.getCookies() == null) return null;
-        for (Cookie cookie : request.getCookies()) {
-            if("authToken".equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-        return null;
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {
@@ -101,5 +100,4 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         return null;
     }
-
 }

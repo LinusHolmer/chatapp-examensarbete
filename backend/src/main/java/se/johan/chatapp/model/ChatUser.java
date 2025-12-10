@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -22,14 +23,25 @@ public class ChatUser {
 
     private Set<String> roles = new HashSet<>();
 
+    private Instant lastPasswordChange = Instant.now();
+
 
     public ChatUser() {
     }
 
-    public ChatUser(String password, String username, Set<String> roles) {
+    public ChatUser(String password, String username, Set<String> roles, Instant lastPasswordChange) {
         this.password = password;
         this.username = username;
         this.roles = roles;
+        this.lastPasswordChange = lastPasswordChange;
+    }
+
+    public Instant getLastPasswordChange() {
+        return lastPasswordChange;
+    }
+
+    public void setLastPasswordChange(Instant lastPasswordChange) {
+        this.lastPasswordChange = lastPasswordChange;
     }
 
     public String getUsername() {
