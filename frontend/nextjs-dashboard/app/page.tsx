@@ -3,12 +3,11 @@
 import "./ui/global.css";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./components/modal/modal";
 import CustomButton from "./components/CustomButton/CustomButton";
 
 type ModalType = "add-friends" | "discover-friends" | null;
-
 
 type Friend = {
   id: number;
@@ -16,15 +15,23 @@ type Friend = {
 };
 
 export default function HomePage() {
-
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
-  
-    const openModal = (type: ModalType) => {
-      setActiveModal(type);
-      setModalOpen(true);
-    };
+  const [discFriends, setDiscFriends] = useState<any[]>([]);
+
+  const openModal = (type: ModalType) => {
+    setActiveModal(type);
+    setModalOpen(true);
+  };
+
+  const discoverFriends = async () => {
+    const response = await fetch("/api/discoverFriends", {
+      credentials: "include",
+    });
+    const data = await response.json();
+    setDiscFriends(data);
+  };
 
   // exempel på vänner för att kolla så det funkar
   const [friends] = useState<Friend[]>([
@@ -58,7 +65,7 @@ export default function HomePage() {
       const prevMessages = prev[selectedFriend.id] ?? []; // hämta gamla meddelanden
       return {
         ...prev,
-        [selectedFriend.id]: [...prevMessages, message],  // lägg till nytt meddelande
+        [selectedFriend.id]: [...prevMessages, message], // lägg till nytt meddelande
       };
     });
 
@@ -66,54 +73,67 @@ export default function HomePage() {
   };
 
   return (
-    <><nav className="navbar">
-      <Link href="/" className="nav-logo">
-        <Image
-          src="/logo.png"
-          alt="Logo"
-          width={200}
-          height={200}
-          priority />
-      </Link>
+    <>
+      <nav className="navbar">
+        <Link href="/" className="nav-logo">
+          <Image src="/logo.png" alt="Logo" width={200} height={200} priority />
+        </Link>
 
-      {/* Hamburgar meny-knapp */}
-      <button className="hamburger" onClick={() => setIsOpen(!isOpen)}>
-        <div className={`line ${isOpen ? "open" : ""}`}></div>
-        <div className={`line ${isOpen ? "open" : ""}`}></div>
-        <div className={`line ${isOpen ? "open" : ""}`}></div>
-      </button>
+        {/* Hamburgar meny-knapp */}
+        <button className="hamburger" onClick={() => setIsOpen(!isOpen)}>
+          <div className={`line ${isOpen ? "open" : ""}`}></div>
+          <div className={`line ${isOpen ? "open" : ""}`}></div>
+          <div className={`line ${isOpen ? "open" : ""}`}></div>
+        </button>
 
-      {/* Menyn som fälls ut */}
-      {isOpen && (
-        <ul className="mobile-menu">
-          <li> <CustomButton buttonText={"Add Friends"} onClick={() => openModal("add-friends")} /></li>
-          <li> <CustomButton buttonText={"Discover Friends"} onClick={() => openModal("discover-friends")} /></li>
-        </ul>
-      )}
+        {/* Menyn som fälls ut */}
+        {isOpen && (
+          <ul className="mobile-menu">
+            <li>
+              {" "}
+              <CustomButton
+                buttonText={"Add Friends"}
+                onClick={() => openModal("add-friends")}
+              />
+            </li>
+            <li>
+              {" "}
+              <CustomButton
+                buttonText={"Discover Friends"}
+                onClick={() => openModal("discover-friends")}
+              />
+            </li>
+          </ul>
+        )}
 
-      {/* gör modal dynamisk sen */}
-      {modalOpen && (
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
-          {activeModal === "add-friends" && (
-            <div>
-              <h2>Add Friends</h2>
-              <p>Here you can add friends.</p>
-            </div>
-          )}
-          {activeModal === "discover-friends" && (
-            <div>
-              <h2>Discover new friends</h2>
-              <p>Here you can discover new friends</p>
-            </div>
-          )}
-        </Modal>
-      )}
+        {/* gör modal dynamisk sen */}
+        {modalOpen && (
+          <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
+            {activeModal === "add-friends" && (
+              <div>
+                <h2>Add Friends</h2>
+                <p>Here you can add friends.</p>
+              </div>
+            )}
+            {activeModal === "discover-friends" && (
+              <div>
+                <h2>Discover new friends</h2>
+                <CustomButton
+                  buttonText={"Discover Friends"}
+                  onClick={discoverFriends}
+                />
+                <ul>
+                  {discFriends.map((name, index) => (
+                    <li key={index}>{name}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </Modal>
+        )}
+      </nav>
 
-    </nav>
-      
-      
       <main className="chat-layout">
-
         {/* vänster: vänner + scroll */}
 
         <aside className="friends-panel">
@@ -124,7 +144,11 @@ export default function HomePage() {
             {friends.map((friend) => (
               <li
                 key={friend.id}
-                className={selectedFriend?.id === friend.id ? "friend-item active" : "friend-item"}
+                className={
+                  selectedFriend?.id === friend.id
+                    ? "friend-item active"
+                    : "friend-item"
+                }
                 onClick={() => setSelectedFriend(friend)}
               >
                 {friend.name}
@@ -157,7 +181,8 @@ export default function HomePage() {
                   type="text"
                   placeholder={`Skriv till ${selectedFriend.name}...`}
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)} />
+                  onChange={(e) => setMessage(e.target.value)}
+                />
                 <button type="submit">Skicka</button>
               </form>
             </>
@@ -168,6 +193,7 @@ export default function HomePage() {
           )}
         </section>
         <div id="modal-root"></div>
-      </main></>
+      </main>
+    </>
   );
 }
