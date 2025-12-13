@@ -59,6 +59,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 if (userDetails != null && userDetails.isEnabled()) {
 
+                    /*
                     Instant tokenLastPasswordChange = tokenService.getLastPasswordChangeFromToken(token);
                     Instant userLastPasswordChange = chatUserRepository.findByUsername(username).getLastPasswordChange();
 
@@ -67,6 +68,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token expired due to password change");
                         return;
                     }
+
+                     */
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
