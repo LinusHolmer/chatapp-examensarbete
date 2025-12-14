@@ -164,3 +164,24 @@ Skapade en .module.css för login (kommer göra en för register och logout ocks
 problem: proxy.ts hur man ska autentisera sig med backend och varför vår fetch inte funkar.
 lösning: skapade en auth endpoint i AuthControllern som validerar din jwt och returnar boolean värde till frontend, felet på vår fetch var att i vårt JWTFilter så behövdes headern "Authorization" finnas med och "Bearer <jwt>" annars går det inte igenom, så vi behövde manuellt sätta headern till det.
 
+## 2025-12-05
+
+ADD: fixade säkerhetsrelaterade saker i koden
+JwtAuthFilter – nu accepterar vi endast JWT i auth-headern och avvisar ogiltiga eller utgångna tokens. Lösenordsbyte gör att token blir ogiltig (lösenordsbyte kommer att implementeras senare).
+
+ADD: enkel knapp för att upptäcka användare (lägga till användare där kommer snart)
+Lade till en knapp som visar 10 slumpmässiga användare från databasen på webbsidan.
+
+problem: vi tog emot cookies och använde oss ut av 2 auth system.
+lösning: tog bort ExtractJwtFromCookie metod i JwtAuthFilter och använder enbart ExtractJwtFromRequest 
+
+Fixat så att man kan lägga till vänner. Gjorde addFriends och getFriends funktion i next.js och kopplade den till backend.
+För att få kommunikationen mellan frontend och backend att fungera bra så skapade jag Next.js API routes app/api/chatUser/addFriend/route.ts som proxy.
+ 
+Problem:
+401 unauthorized: Försökte först använda cookies och localstorage token. Insåg sen att token inte fanns i localstorage eftersom vi använder httpOnly cookie. Lösningen blev proxy via next API routes som skickar bearer.
+ 
+404 på api/...: Jag hade routes på fel path så ingenting funkade. Jag flyttade dem till rätt struktur under app/api/... och matchade fetch url.
+ 
+403 på addFriend: Jag ändrade proxy-routen för addFriend så att den alltid skickar bearer rätt och hanterar backendens 204 No content.
+
