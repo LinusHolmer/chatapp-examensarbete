@@ -185,3 +185,9 @@ Problem:
  
 403 på addFriend: Jag ändrade proxy-routen för addFriend så att den alltid skickar bearer rätt och hanterar backendens 204 No content.
 
+## 2025-12-15
+
+ADD: Uppdaterad Upptäck vän
+Discover friend – nu kan du lägga till vänner du upptäcker genom att trycka på den nya lägg till-knappen bredvid deras namn.
+
++ såg en funktion på startsidan och gjorde om den till en komponent för att spara utrymme.
