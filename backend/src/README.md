@@ -191,3 +191,24 @@ ADD: Uppdaterad Upptäck vän
 Discover friend – nu kan du lägga till vänner du upptäcker genom att trycka på den nya lägg till-knappen bredvid deras namn.
 
 + såg en funktion på startsidan och gjorde om den till en komponent för att spara utrymme.
+
+Skapat metoder för backend-endpoints för:
+att skicka nya meddelanden(sendNew)
+att hämta mottagna meddelanden(viewMessages)
+att hämta skickade meddelanden(viewSentMessages)
+Hämtat både skickade och mottagna meddelanden i frontend och lagt dom i våran homepage. Skapat css för att göra det mer likt en vanlig sms app. 
+Gjort så att man kan se vännens namn bredvid deras meddelande. Ändrade också lite css för att det ska följa temat av resten av hemsidan. 
+ 
+problem och lösningar:
+Meddelanden skickades men syntes inte hos mottagaren.
+Löstes genom att hämta både skickade och mottagna meddelanden från backend.
+
+Svårt att avgöra vem som skickat ett meddelande.
+Löstes genom att märka meddelanden som “in”(inkommande meddelanden/vän) eller “out”(våra meddelanden) i frontend.
+
+Meddelanden visades i fel ordning.
+Löstes genom att sortera dem med hjälp av tidsstämpeln.
+
+## 2025-12-16
+Vi mergade våra branches till production och testade skriva med varandra, 1-2 sekunder delay och vi märkte att antalet requests var galet för 1 user, så vi börjar kolla på websocket för Spring Boot.
+Istället för att skicka request hela tiden så håller websocket en connection som återanvänds mellen klient och server, vilket löser problemet vi har.
