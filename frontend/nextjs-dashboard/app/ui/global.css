@@ -224,3 +224,9 @@ html, body {
 .mobile-menu a:hover {
   text-decoration: underline;
 }
+
+.discover-friends {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
