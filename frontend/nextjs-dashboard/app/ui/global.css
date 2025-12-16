@@ -117,8 +117,9 @@ body > main {
   flex: 1;
   padding: 0.6rem 0.7rem;
   border-radius: 6px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #00000000;
   font-size: 0.95rem;
+  
 }
 
 .chat-input-row button {
@@ -126,9 +127,11 @@ body > main {
   border-radius: 6px;
   border: none;
   background: #ff8800;
-  color: white;
+  color: rgb(0, 0, 0);
   font-weight: 500;
   cursor: pointer;
+  font-weight: bold;
+  
 }
 
 .chat-input-row button:hover {
