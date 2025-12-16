@@ -164,6 +164,7 @@ export default function HomePage() {
                     onClick={async () =>{
                       await addFriend(name)
                       await fetchFriends()
+                      await discoverFriends()
                       }
                     }
                     /> 
