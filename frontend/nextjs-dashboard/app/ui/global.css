@@ -55,7 +55,7 @@ body > main {
 }
 
 .friend-item.active {
-  background: #2563eb;
+  background: #ff8800;
   color: white;
 }
 
@@ -81,17 +81,31 @@ body > main {
   overflow-y: auto;
   padding-right: 0.5rem;
   margin-bottom: 0.8rem;
+  display: flex;         
+  flex-direction: column; 
 }
 
 .chat-bubble {
   max-width: 70%;
-  background: #ff8800;
-  color: white;
   padding: 0.5rem 0.7rem;
   border-radius: 12px;
   margin-bottom: 0.4rem;
-  align-self: flex-end;
+  word-wrap: break-word;
 }
+.chat-bubble.sent {
+  background: #ff8800;     
+  color: white;
+  align-self: flex-end; 
+  
+}
+.chat-bubble.received {
+  background: #facc15;     
+  color: #111;
+  align-self: flex-start; 
+
+}
+
+
 
 /* skrivfält */
 .chat-input-row {
@@ -111,7 +125,7 @@ body > main {
   padding: 0.6rem 1rem;
   border-radius: 6px;
   border: none;
-  background: #2563eb;
+  background: #ff8800;
   color: white;
   font-weight: 500;
   cursor: pointer;

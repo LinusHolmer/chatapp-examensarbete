@@ -17,6 +17,12 @@ type Friend = {
   name: string;
 };
 
+type ChatMessage = {
+  body: string;
+  timestamp: string;
+  direction: "in" | "out";
+};
+
 export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -25,9 +31,7 @@ export default function HomePage() {
 
 
   const discoverFriends = async () => {
-    const response = await fetch("/api/chatUser/discover", {
-      credentials: "include",
-    });
+    const response = await fetch("/api/chatUser/discover");
     const data = await response.json();
     setDiscFriends(data);
   };
@@ -42,7 +46,7 @@ export default function HomePage() {
     setActiveModal(null);
   };
 
-  //vänner från backend
+  // vänner från backend
   const [friends, setFriends] = useState<Friend[]>([]);
   const [friendsError, setFriendsError] = useState<string | null>(null);
 
@@ -68,10 +72,8 @@ export default function HomePage() {
     );
   }, []);
 
-  // Den vän som är vald just nu
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
 
-  // om friends ändras måste selectfriend finnas
   useEffect(() => {
     setSelectedFriend((prev) => {
       if (friends.length === 0) return null;
@@ -81,28 +83,71 @@ export default function HomePage() {
     });
   }, [friends]);
 
-  // Vad användaren skriver skriva i chattrutan
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  // Alla chattmeddelanden uppdelade per vän
-  const [chatLog, setChatLog] = useState<Record<number, string[]>>({});
+  const loadChat = async (friendName: string) => {
+    const receivedRes = await fetch("/api/messages/viewMessages", {
+      cache: "no-store",
+    });
+    const sentRes = await fetch("/api/messages/viewSentMessages", {
+      cache: "no-store",
+    });
 
-  // Funktion som körs när man trycker på skicka knappen
-  const handleSend = (e: React.FormEvent) => {
+    const received = await receivedRes.json();
+    const sent = await sentRes.json();
+
+    const combined: ChatMessage[] = [
+      ...received
+        .filter((m: any) => m.sender === friendName)
+        .map((m: any) => ({
+          body: m.body,
+          timestamp: m.timestamp,
+          direction: "in",
+        })),
+
+      ...sent
+        .filter((m: any) => m.receiver === friendName)
+        .map((m: any) => ({
+          body: m.body,
+          timestamp: m.timestamp,
+          direction: "out",
+        })),
+    ];
+
+    combined.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    setMessages(combined);
+  };
+
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!selectedFriend || !message.trim()) return;
 
-    setChatLog((prev) => {
-      const prevMessages = prev[selectedFriend.id] ?? [];
-      return {
-        ...prev,
-        [selectedFriend.id]: [...prevMessages, message],
-      };
+    await fetch("/api/messages/sendNew", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        receiver: selectedFriend.name,
+        body: message,
+      }),
     });
 
     setMessage("");
+    await loadChat(selectedFriend.name);
   };
+
+  useEffect(() => {
+    if (!selectedFriend) return;
+
+    loadChat(selectedFriend.name);
+    const interval = setInterval(() => loadChat(selectedFriend.name), 3000);
+
+    return () => clearInterval(interval);
+  }, [selectedFriend]);
 
   return (
     <>
@@ -134,15 +179,19 @@ export default function HomePage() {
           </ul>
         )}
 
-        {modalOpen && (
+         {modalOpen && (
           <Modal isOpen={modalOpen} onClose={closeModal}>
             {activeModal === "add-friends" && (
               <AddFriendContent
                 onAdded={async () => {
-                  await fetchFriends().catch((e: any) =>
-                    setFriendsError(e.message || "Kunde inte uppdatera vänner")
-                  );
-                  closeModal();
+                  try{
+                  await fetchFriends();
+                }catch(e: any){
+                    setFriendsError(e.message || "Kunde inte uppdatera vänner");
+                  }
+                  
+                  
+                  
                 }}
               />
             )}
@@ -181,7 +230,6 @@ export default function HomePage() {
       <main className="chat-layout">
         <aside className="friends-panel">
           <h2>Vänner</h2>
-
           {friendsError && <p className="status">{friendsError}</p>}
 
           <ul className="friends-list">
@@ -193,7 +241,10 @@ export default function HomePage() {
                     ? "friend-item active"
                     : "friend-item"
                 }
-                onClick={() => setSelectedFriend(friend)}
+                onClick={() => {
+                  setSelectedFriend(friend);
+                  loadChat(friend.name);
+                }}
               >
                 {friend.name}
               </li>
@@ -209,12 +260,29 @@ export default function HomePage() {
               </header>
 
               <div className="chat-messages">
-                {(chatLog[selectedFriend.id] ?? []).map((m, i) => (
-                  <div key={i} className="chat-bubble">
-                    {m}
-                  </div>
-                ))}
-              </div>
+  {messages.map((m, i) => (
+    // varje meddelande som ser ut som en chat bubble
+    // key={i} för att react ska hålla koll på listan
+    <div
+      key={i}
+      
+      className={`chat-bubble ${m.direction === "out" ? "sent" : "received"}`}
+    >
+      <strong>
+        {
+          // om "out" = vi skickad så står det "du"
+          // om vän skickade = vännens namn
+          m.direction === "out" ? "Du" : selectedFriend?.name
+        }
+        :
+      </strong>{" "}
+      {
+    
+        m.body
+      }
+    </div>
+  ))}
+</div>
 
               <form onSubmit={handleSend} className="chat-input-row">
                 <input
@@ -233,7 +301,9 @@ export default function HomePage() {
           )}
         </section>
 
+        
         <div id="modal-root"></div>
+
       </main>
     </>
   );
