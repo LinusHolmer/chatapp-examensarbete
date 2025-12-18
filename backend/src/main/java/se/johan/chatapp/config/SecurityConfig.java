@@ -40,10 +40,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfiguration))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/login", "/register","/logout", "/public-key"
+                                "/login", "/register","/logout", "/ws/**", "/ws/info"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
+
                 .logout(logout -> logout.disable())
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session ->
