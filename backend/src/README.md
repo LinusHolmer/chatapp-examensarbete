@@ -212,3 +212,22 @@ Löstes genom att sortera dem med hjälp av tidsstämpeln.
 ## 2025-12-16
 Vi mergade våra branches till production och testade skriva med varandra, 1-2 sekunder delay och vi märkte att antalet requests var galet för 1 user, så vi börjar kolla på websocket för Spring Boot.
 Istället för att skicka request hela tiden så håller websocket en connection som återanvänds mellen klient och server, vilket löser problemet vi har.
+
+## 2025-12-16
+Lagt till funktionalitet för att ta bort skickade meddelanden och förbättrat vänlistan så att den vän man senast chattat med automatiskt hamnar högst upp. Målet var att göra chatten mer lik hur riktiga chattappar fungerar.
+ 
+ 
+Ett problem jag stötte på var att det inte gick att ta bort meddelanden på ett säkert sätt utan att skicka användarnamn och lösenord varje gång. 
+Lösningen blev att använda den inloggade användaren via authentication i backend och skapa en endpoint som tar bort det senaste skickade meddelandet till en specifik mottagare.
+För detta skapade jag även en ny DTO som bara innehåller mottagarens användarnamn. Det gjorde koden tydligare och säkrare, istället för att återanvända en DTO som innehöll onödiga fält.
+I frontend lade jag till en liten remove knapp under mina egna meddelanden, som anropar delete-endpointen och laddar om chatten. 
+ 
+När jag skickade ett meddelande märkte jag att vänlistan inte uppdaterades. För att lösa det skapade jag en funktion som flyttar vännen högst upp i listan genom att uppdatera state i react istället för att göra ett nytt backend anrop.
+
+ADD: Testing med WebSocket
+La till WebSocket-dependencies i backend och frontend.
+Valde att köra dubbel auth för WebSocket – en innan connection och en efter connection (varje message*), så om JWT är invalid kommer du inte kunna skicka messages.
+Gjorde en test page som testar den nya WebSocket-controllern, den skickade message till db.
+
+problem: principal var null(principal är typ authentication i spring), vilket betyder att användaren inte finns vilket leder till problem.
+lösning: skapade en UserHandshakeHandler som tar info från interceptorn och skapar rätt objekt med rätt info.
