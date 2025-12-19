@@ -111,7 +111,6 @@ public class MessageService {
             return result;
     }
 
-
     public List<SentMessageDTO> viewSentMessages(String username) {
         ChatUser user = chatUserRepository.findByUsername(username);
 
