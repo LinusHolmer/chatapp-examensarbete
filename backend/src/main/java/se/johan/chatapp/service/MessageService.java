@@ -111,7 +111,6 @@ public class MessageService {
             return result;
     }
 
-
     public List<SentMessageDTO> viewSentMessages(String username) {
         ChatUser user = chatUserRepository.findByUsername(username);
 
@@ -130,5 +129,39 @@ public class MessageService {
                 result.add(dto);
             }
             return result;
+    }
+    public Message newSendMessage(String username, String body, String receiver) {
+        try {
+            ChatUser sender = chatUserRepository.findByUsername(username);
+            if (sender == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            }
+
+            ChatUser receiverUser = chatUserRepository.findByUsername(receiver);
+            if (receiverUser == null) {
+                throw new NoSuchElementException("Mottagaren finns inte");
+            }
+
+            Message message = new Message();
+            message.setSender(sender.getUsername());
+            message.setBody(body);
+            message.setReceiver(receiverUser.getUsername());
+            message.setTimestamp(LocalDateTime.now());
+
+            logger.info("{} sent a message to {}", sender.getUsername(), receiverUser.getUsername());
+
+            return messageRepository.save(message);
+
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Du saknar behörighet eller är inte inloggad"
+            );
+        } catch (NoSuchElementException e) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Mottagaren finns inte"
+            );
+        }
     }
 }

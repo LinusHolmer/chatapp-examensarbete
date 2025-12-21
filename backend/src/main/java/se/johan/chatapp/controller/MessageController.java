@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import se.johan.chatapp.dto.DeleteMessageRequest;
 import se.johan.chatapp.dto.MessageRequest;
+import se.johan.chatapp.dto.MessagesResponse;
 import se.johan.chatapp.dto.SendMessageRequest;
 import se.johan.chatapp.dto.SentMessageDTO;
 import se.johan.chatapp.model.Message;
@@ -73,6 +74,19 @@ public class MessageController {
                 auth.getName()
         );
             return ResponseEntity.ok(messages);
+    }
+
+    @GetMapping("/testMessages")
+    public ResponseEntity<MessagesResponse> testMessages(Authentication auth) {
+        List<MessageRequest> messages = messageService.viewMessages(
+                auth.getName()
+        );
+        List<SentMessageDTO> messagesSent = messageService.viewSentMessages(
+                auth.getName()
+        );
+
+        MessagesResponse response = new MessagesResponse(messages, messagesSent);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/viewSentMessages")
