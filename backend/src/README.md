@@ -213,7 +213,7 @@ Löstes genom att sortera dem med hjälp av tidsstämpeln.
 Vi mergade våra branches till production och testade skriva med varandra, 1-2 sekunder delay och vi märkte att antalet requests var galet för 1 user, så vi börjar kolla på websocket för Spring Boot.
 Istället för att skicka request hela tiden så håller websocket en connection som återanvänds mellen klient och server, vilket löser problemet vi har.
 
-## 2025-12-16
+## 2025-12-18
 Lagt till funktionalitet för att ta bort skickade meddelanden och förbättrat vänlistan så att den vän man senast chattat med automatiskt hamnar högst upp. Målet var att göra chatten mer lik hur riktiga chattappar fungerar.
  
  
