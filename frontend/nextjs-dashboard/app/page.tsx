@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Modal from "./components/modal/modal";
 import CustomButton from "./components/CustomButton/CustomButton";
+import { addFriend } from "./components/AddFriend/AddFriend";
+
 
 type ModalType = "add-friends" | "discover-friends" | null;
 
@@ -24,12 +26,15 @@ export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+
   const [unread, setUnread] = useState<Record<string, number>>({});
   const [lastSeen, setLastSeen] = useState<Record<string, string>>({});
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const [inboxReady, setInboxReady] = useState(false);
 
   const [discFriends, setDiscFriends] = useState<any[]>([]);
+
+
   const discoverFriends = async () => {
     const response = await fetch("/api/chatUser/discover");
     const data = await response.json();
@@ -319,7 +324,19 @@ export default function HomePage() {
                 />
                 <ul>
                   {discFriends.map((name, index) => (
-                    <li key={index}>{name}</li>
+                    <li key={index} className="discover-friends">
+                    <span>{name}</span>
+                    <CustomButton 
+                    buttonText={"Add"} 
+                    onClick={async () =>{
+                      await addFriend(name)
+                      await fetchFriends()
+                      await discoverFriends()
+                      }
+                    }
+                    /> 
+
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -417,6 +434,7 @@ export default function HomePage() {
     </>
   );
 }
+
 function AddFriendContent({
   onAdded,
 }: {
@@ -483,3 +501,4 @@ function AddFriendContent({
     </div>
   );
 }
+

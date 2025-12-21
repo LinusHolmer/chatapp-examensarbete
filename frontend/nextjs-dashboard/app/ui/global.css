@@ -239,6 +239,7 @@ html, body {
 .mobile-menu a:hover {
   text-decoration: underline;
 }
+<<<<<<< HEAD
 .remove-btn {
   background: none;
   border: none;
@@ -270,3 +271,11 @@ html, body {
   min-width: 20px;
   text-align: center;
 }
+=======
+
+.discover-friends {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+>>>>>>> 67adc6cb23869308b5117c82950e32ce2c38c884
