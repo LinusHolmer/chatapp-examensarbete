@@ -230,4 +230,16 @@ Valde att köra dubbel auth för WebSocket – en innan connection och en efter 
 Gjorde en test page som testar den nya WebSocket-controllern, den skickade message till db.
 
 problem: principal var null(principal är typ authentication i spring), vilket betyder att användaren inte finns vilket leder till problem.
-lösning: skapade en UserHandshakeHandler som tar info från interceptorn och skapar rätt objekt med rätt info.
+lösning: skapade en UserHandshakeHandler som tar info från interceptorn och skapar rätt objekt med rätt info, interceptor kunde inte skapa det själv.
+
+## 2025-12-21
+Mergade våra branches websocket och hanteraMeddelanden till production utan problem, vi tänker ta jul paus tills den 26 Dec.
+Nästa steg är att implementera WebSocket för chat funktionen på Frontend, har testat med några test knappar på test sidan och det funkade.
+
+Jag har lagt till notiser i chatten så att man tydligt ser när en vän har skickat ett nytt meddelande. Om en vän skickar ett meddelande som inte är läst visas en röd siffre bredvid namnet i vänlistan, och den vännen flyttas automatiskt högst upp. Detta gör chatten mer användarvänlig och liknar hur riktiga chattappar fungerar.
+ 
+problem och lösning:
+Det var svårt att veta om man fått nya meddelanden när man inte hade chatten öppen. Jag började poll:a backend (/viewMessages) var tredje sekund för att kolla om det kommit nya inkommande meddelanden.
+ 
+Vänlistan uppdaterades inte när någon skickade ett nytt meddelande. Jag skapade ett unread state som håller koll på hur många olästa meddelanden varje vän har.
+
