@@ -6,7 +6,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import Modal from "./components/modal/modal";
 import CustomButton from "./components/CustomButton/CustomButton";
-import AddFriendContent from "./components/AddFriendContent/AddFriendContent";
 import { addFriend } from "./components/AddFriend/AddFriend";
 
 
@@ -27,6 +26,12 @@ export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+
+  const [unread, setUnread] = useState<Record<string, number>>({});
+  const [lastSeen, setLastSeen] = useState<Record<string, string>>({});
+  const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
+  const [inboxReady, setInboxReady] = useState(false);
+
   const [discFriends, setDiscFriends] = useState<any[]>([]);
 
 
@@ -50,6 +55,92 @@ export default function HomePage() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [friendsError, setFriendsError] = useState<string | null>(null);
 
+  const moveFriendToTop = (friendName: string) => {
+    setFriends((prev) => {
+      const friend = prev.find((f) => f.name === friendName);
+      if (!friend) return prev;
+
+      // ta bort vännen och lägg den först
+      return [friend, ...prev.filter((f) => f.name !== friendName)];
+    });
+  };
+  const pollInbox = async () => {
+    const res = await fetch("/api/messages/viewMessages", {
+      cache: "no-store",
+    });
+    if (!res.ok) return;
+
+    const received = await res.json();
+    if (!Array.isArray(received)) return;
+
+    // senaste inkommande per avsändare
+    const latestBySender: Record<string, string> = {};
+    for (const m of received) {
+      const sender = m.sender as string | undefined;
+      const ts = m.timestamp as string | undefined;
+      if (!sender || !ts) continue;
+
+      //desc sort
+      if (
+        !latestBySender[sender] ||
+        new Date(ts) > new Date(latestBySender[sender])
+      ) {
+        latestBySender[sender] = ts;
+      }
+    }
+
+    // första gången, baselinea lastSeen och räkna inga notiser
+    if (!inboxReady) {
+      setLastSeen((prev) => ({ ...prev, ...latestBySender }));
+      setInboxReady(true);
+      return;
+    }
+
+    // samla alla "nya" senders + deras senaste timestamp
+    const toMove: { sender: string; latestTs: string }[] = [];
+
+    for (const [sender, latestTs] of Object.entries(latestBySender)) {
+      const prevSeen = lastSeen[sender];
+      const isNew = !prevSeen || new Date(latestTs) > new Date(prevSeen);
+
+      if (isNew && selectedFriend?.name !== sender) {
+        setUnread((prev) => ({ ...prev, [sender]: (prev[sender] ?? 0) + 1 }));
+        setLastSeen((prev) => ({ ...prev, [sender]: latestTs })); // så den inte tickar upp varje poll
+        toMove.push({ sender, latestTs });
+      }
+    }
+
+    // sortera så att vi flyttar i ordning: äldst först, nyast sist
+    toMove.sort(
+      (a, b) => new Date(a.latestTs).getTime() - new Date(b.latestTs).getTime()
+    );
+
+    // flytta upp dem i rätt ordning
+    if (toMove.length > 0) {
+      setFriends((prev) => {
+        let arr = [...prev];
+
+        for (const { sender } of toMove) {
+          const friend = arr.find((f) => f.name === sender);
+          if (!friend) continue;
+
+          arr = [friend, ...arr.filter((f) => f.name !== sender)];
+        }
+
+        return arr;
+      });
+    }
+  };
+
+  // kör polling för inbox
+  useEffect(() => {
+    const interval = setInterval(() => {
+      pollInbox();
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [selectedFriend, inboxReady, lastSeen]);
+
   const fetchFriends = async () => {
     setFriendsError(null);
 
@@ -71,8 +162,6 @@ export default function HomePage() {
       setFriendsError(e.message || "Kunde inte hämta vänner")
     );
   }, []);
-
-  const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
 
   useEffect(() => {
     setSelectedFriend((prev) => {
@@ -121,13 +210,20 @@ export default function HomePage() {
     );
 
     setMessages(combined);
+    const latestIncoming = combined
+      .filter((m) => m.direction === "in")
+      .slice(-1)[0]?.timestamp;
+
+    if (latestIncoming) {
+      setLastSeen((prev) => ({ ...prev, [friendName]: latestIncoming }));
+    }
   };
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFriend || !message.trim()) return;
 
-    await fetch("/api/messages/sendNew", {
+    const res = await fetch("/api/messages/sendNew", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -136,7 +232,33 @@ export default function HomePage() {
       }),
     });
 
+    if (!res.ok) {
+      const text = await res.text();
+      console.log("sendNew failed:", res.status, text);
+      return;
+    }
+
+    moveFriendToTop(selectedFriend.name);
+
     setMessage("");
+    await loadChat(selectedFriend.name);
+  };
+
+  const handleRemove = async () => {
+    if (!selectedFriend) return;
+
+    const res = await fetch("/api/messages/deleteLatest", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ receiver: selectedFriend.name }),
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.log("deleteLatest failed:", res.status, text);
+      throw new Error(`HTTP ${res.status}: ${text}`);
+    }
+
     await loadChat(selectedFriend.name);
   };
 
@@ -179,24 +301,20 @@ export default function HomePage() {
           </ul>
         )}
 
-         {modalOpen && (
+        {modalOpen && (
           <Modal isOpen={modalOpen} onClose={closeModal}>
             {activeModal === "add-friends" && (
               <AddFriendContent
                 onAdded={async () => {
-                  try{
-                  await fetchFriends();
-                }catch(e: any){
+                  try {
+                    await fetchFriends();
+                  } catch (e: any) {
                     setFriendsError(e.message || "Kunde inte uppdatera vänner");
                   }
-                  
-                  
-                  
                 }}
               />
             )}
 
-            
             {activeModal === "discover-friends" && (
               <div>
                 <h2>Discover new friends</h2>
@@ -231,22 +349,32 @@ export default function HomePage() {
         <aside className="friends-panel">
           <h2>Vänner</h2>
           {friendsError && <p className="status">{friendsError}</p>}
-
           <ul className="friends-list">
             {friends.map((friend) => (
               <li
-                key={friend.id}
+                key={friend.name}
                 className={
-                  selectedFriend?.id === friend.id
+                  selectedFriend?.name === friend.name
                     ? "friend-item active"
                     : "friend-item"
                 }
                 onClick={() => {
                   setSelectedFriend(friend);
                   loadChat(friend.name);
+
+                  // nollställ unread när man öppnar chatten
+                  setUnread((prev) => ({ ...prev, [friend.name]: 0 }));
+                  setLastSeen((prev) => ({
+                    ...prev,
+                    [friend.name]: new Date().toISOString(),
+                  }));
                 }}
               >
-                {friend.name}
+                <span className="friend-name">{friend.name}</span>
+
+                {unread[friend.name] > 0 && (
+                  <span className="badge">{unread[friend.name]}</span>
+                )}
               </li>
             ))}
           </ul>
@@ -260,29 +388,29 @@ export default function HomePage() {
               </header>
 
               <div className="chat-messages">
-  {messages.map((m, i) => (
-    // varje meddelande som ser ut som en chat bubble
-    // key={i} för att react ska hålla koll på listan
-    <div
-      key={i}
-      
-      className={`chat-bubble ${m.direction === "out" ? "sent" : "received"}`}
-    >
-      <strong>
-        {
-          // om "out" = vi skickad så står det "du"
-          // om vän skickade = vännens namn
-          m.direction === "out" ? "Du" : selectedFriend?.name
-        }
-        :
-      </strong>{" "}
-      {
-    
-        m.body
-      }
-    </div>
-  ))}
-</div>
+                {messages.map((m, i) => (
+                  <div
+                    key={i}
+                    className={`chat-bubble ${
+                      m.direction === "out" ? "sent" : "received"
+                    }`}
+                  >
+                    <strong>
+                      {m.direction === "out" ? "Du" : selectedFriend?.name}:
+                    </strong>{" "}
+                    {m.body}
+                    {/* Visa Remove bara på dina egna (out) */}
+                    {m.direction === "out" && (
+                      <button
+                        className="remove-btn"
+                        onClick={() => handleRemove()}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
 
               <form onSubmit={handleSend} className="chat-input-row">
                 <input
@@ -301,11 +429,76 @@ export default function HomePage() {
           )}
         </section>
 
-        
         <div id="modal-root"></div>
-
       </main>
     </>
+  );
+}
+
+function AddFriendContent({
+  onAdded,
+}: {
+  onAdded: () => void | Promise<void>;
+}) {
+  const [friendUsername, setFriendUsername] = useState("");
+  const [msg, setMsg] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMsg(null);
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/chatUser/addFriend", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ friendUsername }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.log("addFriend failed:", res.status, text);
+        throw new Error(`HTTP ${res.status}: ${text}`);
+      }
+
+      setMsg(`Vän '${friendUsername}' har lagts till!`);
+      setFriendUsername("");
+      await onAdded();
+    } catch (e: any) {
+      console.error("Add friend error:", e);
+      setError(e?.message || "Något gick fel");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Add Friends</h2>
+
+      <form onSubmit={handleAdd} className="addfriend-form">
+        <label>
+          Användarnamn
+          <input
+            type="text"
+            placeholder="användarnamn"
+            value={friendUsername}
+            onChange={(e) => setFriendUsername(e.target.value)}
+            required
+          />
+        </label>
+
+        <button type="submit" className="btn-add" disabled={loading}>
+          {loading ? "Lägger till..." : "Lägg till"}
+        </button>
+      </form>
+
+      {msg && <p className="status">{msg}</p>}
+      {error && <p className="status">{error}</p>}
+    </div>
   );
 }
 

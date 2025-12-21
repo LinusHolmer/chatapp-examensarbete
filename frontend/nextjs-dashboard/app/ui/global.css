@@ -83,6 +83,7 @@ body > main {
   margin-bottom: 0.8rem;
   display: flex;         
   flex-direction: column; 
+
 }
 
 .chat-bubble {
@@ -163,7 +164,7 @@ html, body {
   align-items: center;
   justify-content: space-between;
   padding: 0rem 1.5rem;
-
+  max-height: 200px;
   color: white;
 }
 
@@ -240,6 +241,37 @@ html, body {
 
 .mobile-menu a:hover {
   text-decoration: underline;
+}
+.remove-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-top: 4px;
+  display: block;
+}
+
+.remove-btn:hover {
+  text-decoration: underline;
+  color: red;
+}
+
+.friend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  background: #ef4444;       /* röd */
+  color: white;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  line-height: 1;
+  min-width: 20px;
+  text-align: center;
 }
 
 .discover-friends {
