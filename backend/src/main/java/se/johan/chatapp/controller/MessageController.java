@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import se.johan.chatapp.dto.DeleteMessageRequest;
 import se.johan.chatapp.dto.MessageRequest;
 import se.johan.chatapp.dto.SendMessageRequest;
 import se.johan.chatapp.dto.SentMessageDTO;
@@ -38,20 +39,33 @@ public class MessageController {
     }
 
     @DeleteMapping("/deleteLatest")
-    public ResponseEntity<Void> deleteLatestMessage(Authentication auth, @Valid @RequestBody SendMessageRequest request) {
-        Optional<Message> deleted = messageService.deleteMessage(
-                auth.getName(),
-                request.receiver()
-        );
+    public ResponseEntity<?> deleteLatestMessage(
+            Authentication auth,
+            @Valid @RequestBody DeleteMessageRequest request
+    ) {
+        try {
+            Optional<Message> deleted = messageService.deleteMessage(
+                    auth.getName(),
+                    request.receiver()
+            );
 
-        if (deleted.isPresent()) {
-            // 204 No Content, ingen body
-            return ResponseEntity.noContent().build();
-        } else {
-            // 401 Unauthorized
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            if (deleted.isPresent()) {
+                return ResponseEntity.noContent().build(); // 204
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No message found to delete");
+
+        } catch (ResponseStatusException e) {
+            // om service kastar en ex 404
+            return ResponseEntity.status(e.getStatusCode()).body(e.getReason());
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not delete message");
         }
     }
+
 
     @GetMapping("/viewMessages")
     public ResponseEntity<?> viewMessages(Authentication auth) {

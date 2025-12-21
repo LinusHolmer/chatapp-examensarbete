@@ -1,4 +1,4 @@
 package se.johan.chatapp.dto;
 
-public class DeleteMessageRequest {
-}
+public record DeleteMessageRequest(String receiver) {}
+
