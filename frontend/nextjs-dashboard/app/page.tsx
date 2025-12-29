@@ -8,6 +8,12 @@ import Modal from "./components/modal/modal";
 import CustomButton from "./components/CustomButton/CustomButton";
 import { addFriend } from "./components/AddFriend/AddFriend";
 import AddFriendContent from "./components/AddFriendContent/AddFriendContent";
+import {
+  connectWebSocket,
+  sendMessage,
+  disconnectWebSocket,
+} from "../app/websocket";
+import { handleSubmit } from "./components/ChatMethods/ChatMethods";
 
 
 type ModalType = "add-friends" | "discover-friends" | null;
@@ -56,6 +62,12 @@ export default function HomePage() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [friendsError, setFriendsError] = useState<string | null>(null);
 
+  // WebSocket connection
+  useEffect(() => {
+    connectWebSocket()
+    return disconnectWebSocket
+  }, [])
+
   const moveFriendToTop = (friendName: string) => {
     setFriends((prev) => {
       const friend = prev.find((f) => f.name === friendName);
@@ -65,6 +77,7 @@ export default function HomePage() {
       return [friend, ...prev.filter((f) => f.name !== friendName)];
     });
   };
+
   const pollInbox = async () => {
     const res = await fetch("/api/messages/viewMessages", {
       cache: "no-store",
@@ -133,6 +146,7 @@ export default function HomePage() {
     }
   };
 
+  /*
   // kör polling för inbox
   useEffect(() => {
     const interval = setInterval(() => {
@@ -141,6 +155,7 @@ export default function HomePage() {
 
     return () => clearInterval(interval);
   }, [selectedFriend, inboxReady, lastSeen]);
+  */
 
   const fetchFriends = async () => {
     setFriendsError(null);
@@ -263,6 +278,8 @@ export default function HomePage() {
     await loadChat(selectedFriend.name);
   };
 
+
+  /*
   useEffect(() => {
     if (!selectedFriend) return;
 
@@ -271,6 +288,7 @@ export default function HomePage() {
 
     return () => clearInterval(interval);
   }, [selectedFriend]);
+  */
 
   return (
     <>
@@ -413,6 +431,8 @@ export default function HomePage() {
                 ))}
               </div>
 
+
+              {/* 
               <form onSubmit={handleSend} className="chat-input-row">
                 <input
                   type="text"
@@ -422,6 +442,17 @@ export default function HomePage() {
                 />
                 <button type="submit">Skicka</button>
               </form>
+              */}
+                <form onSubmit={handleSubmit(message, selectedFriend.name)} className="chat-input-row">
+                <input
+                  type="text"
+                  placeholder={`Skriv till ${selectedFriend.name}...`}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <button type="submit">Skicka</button>
+              </form>
+              
             </>
           ) : (
             <div className="chat-empty">
