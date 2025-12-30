@@ -74,12 +74,7 @@ export default function HomePage() {
     return disconnectWebSocket
   }, [])
 
-  useEffect(() => {
-    const sub = client?.subscribe("/user/queue/messages", (message) => {
-      const data: WSMessage = JSON.parse(message.body)
-      console.log(data) 
-    })
-  })
+
 
   
 
