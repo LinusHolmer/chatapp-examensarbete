@@ -12,6 +12,7 @@ import {
   connectWebSocket,
   sendMessage,
   disconnectWebSocket,
+  client
 } from "../app/websocket";
 import { handleSubmit } from "./components/ChatMethods/ChatMethods";
 
@@ -26,6 +27,13 @@ type ChatMessage = {
   body: string;
   timestamp: string;
   direction: "in" | "out";
+};
+
+type WSMessage = {
+  sender: string;
+  receiver: string;
+  body: string;
+  timestamp: string;
 };
 
 export default function HomePage() {
@@ -65,6 +73,13 @@ export default function HomePage() {
     connectWebSocket()
     return disconnectWebSocket
   }, [])
+
+  useEffect(() => {
+    const sub = client?.subscribe("/user/queue/messages", (message) => {
+      const data: WSMessage = JSON.parse(message.body)
+      console.log(data) 
+    })
+  })
 
   
 

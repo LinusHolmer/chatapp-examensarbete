@@ -3,7 +3,7 @@
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
-let client: Client | null = null;
+export let client: Client | null = null;
 
 
 export function connectWebSocket() {
