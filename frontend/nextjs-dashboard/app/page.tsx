@@ -41,9 +41,6 @@ export default function HomePage() {
 
   const [discFriends, setDiscFriends] = useState<any[]>([]);
 
-  const [receivedMessages, setReceivedMessages] = useState([]);
-  const [sentMessages, setSentMessages] = useState([]);
-
   const discoverFriends = async () => {
     const response = await fetch("/api/chatUser/discover");
     const data = await response.json();
@@ -249,8 +246,6 @@ export default function HomePage() {
 
     const {receivedMessages, sentMessages} = data
 
-    setReceivedMessages(receivedMessages)
-    setSentMessages(sentMessages)
     
     const combined: ChatMessage[] = [
       ...receivedMessages
