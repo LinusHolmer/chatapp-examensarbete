@@ -74,8 +74,6 @@ export default function HomePage() {
     return disconnectWebSocket
   }, [])
 
-
-
   
 
   const moveFriendToTop = (friendName: string) => {
