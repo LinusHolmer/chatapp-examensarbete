@@ -41,6 +41,8 @@ export default function HomePage() {
 
   const [discFriends, setDiscFriends] = useState<any[]>([]);
 
+  const [receivedMessages, setReceivedMessages] = useState([]);
+  const [sentMessages, setSentMessages] = useState([]);
 
   const discoverFriends = async () => {
     const response = await fetch("/api/chatUser/discover");
@@ -156,6 +158,7 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, [selectedFriend, inboxReady, lastSeen]);
   */
+ 
 
   const fetchFriends = async () => {
     setFriendsError(null);
@@ -191,6 +194,8 @@ export default function HomePage() {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
+  
+  /*
   const loadChat = async (friendName: string) => {
     const receivedRes = await fetch("/api/messages/viewMessages", {
       cache: "no-store",
@@ -212,6 +217,51 @@ export default function HomePage() {
         })),
 
       ...sent
+        .filter((m: any) => m.receiver === friendName)
+        .map((m: any) => ({
+          body: m.body,
+          timestamp: m.timestamp,
+          direction: "out",
+        })),
+    ];
+
+    combined.sort(
+      (a, b) =>
+        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
+
+    setMessages(combined);
+    const latestIncoming = combined
+      .filter((m) => m.direction === "in")
+      .slice(-1)[0]?.timestamp;
+
+    if (latestIncoming) {
+      setLastSeen((prev) => ({ ...prev, [friendName]: latestIncoming }));
+    }
+  };
+  */
+
+  const loadChat = async (friendName: string) => {
+    const response = await fetch("/api/messages/viewMessagesV2", {
+      cache: "no-store",
+    });
+    const data = await response.json()
+
+    const {receivedMessages, sentMessages} = data
+
+    setReceivedMessages(receivedMessages)
+    setSentMessages(sentMessages)
+    
+    const combined: ChatMessage[] = [
+      ...receivedMessages
+        .filter((m: any) => m.sender === friendName)
+        .map((m: any) => ({
+          body: m.body,
+          timestamp: m.timestamp,
+          direction: "in",
+        })),
+
+      ...sentMessages
         .filter((m: any) => m.receiver === friendName)
         .map((m: any) => ({
           body: m.body,
