@@ -179,6 +179,8 @@ export default function HomePage() {
     );
   }, []);
 
+  // fråga erik vrf den finns
+/* 
   useEffect(() => {
     setSelectedFriend((prev) => {
       if (friends.length === 0) return null;
@@ -187,6 +189,7 @@ export default function HomePage() {
       return stillExists ?? friends[0];
     });
   }, [friends]);
+  */
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -246,7 +249,6 @@ export default function HomePage() {
 
     const {receivedMessages, sentMessages} = data
 
-    
     const combined: ChatMessage[] = [
       ...receivedMessages
         .filter((m: any) => m.sender === friendName)
