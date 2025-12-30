@@ -15,7 +15,6 @@ import {
 } from "../app/websocket";
 import { handleSubmit } from "./components/ChatMethods/ChatMethods";
 
-
 type ModalType = "add-friends" | "discover-friends" | null;
 
 type Friend = {
@@ -66,6 +65,8 @@ export default function HomePage() {
     connectWebSocket()
     return disconnectWebSocket
   }, [])
+
+  
 
   const moveFriendToTop = (friendName: string) => {
     setFriends((prev) => {
@@ -213,30 +214,6 @@ export default function HomePage() {
     }
   };
 
-  const handleSend = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedFriend || !message.trim()) return;
-
-    const res = await fetch("/api/messages/sendNew", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        receiver: selectedFriend.name,
-        body: message,
-      }),
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      console.log("sendNew failed:", res.status, text);
-      return;
-    }
-
-    moveFriendToTop(selectedFriend.name);
-
-    setMessage("");
-    await loadChat(selectedFriend.name);
-  };
 
   const handleRemove = async () => {
     if (!selectedFriend) return;
@@ -255,6 +232,9 @@ export default function HomePage() {
 
     await loadChat(selectedFriend.name);
   };
+
+
+  
 
   return (
     <>
@@ -397,16 +377,18 @@ export default function HomePage() {
                 ))}
               </div>
 
-                <form onSubmit={handleSubmit(message, selectedFriend.name)} className="chat-input-row">
+                <form onSubmit={handleSubmit(message, selectedFriend.name)} 
+                  className="chat-input-row">
                 <input
                   type="text"
                   placeholder={`Skriv till ${selectedFriend.name}...`}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <button type="submit">Skicka</button>
+                <button type="submit" onClick={() => {moveFriendToTop(selectedFriend.name)}}>Skicka</button>
+                
               </form>
-              
+
             </>
           ) : (
             <div className="chat-empty">

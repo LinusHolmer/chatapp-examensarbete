@@ -5,6 +5,7 @@ import { Client } from "@stomp/stompjs";
 
 let client: Client | null = null;
 
+
 export function connectWebSocket() {
   if (client && client.active) {
     console.log("WebSocket already connected");
@@ -19,11 +20,6 @@ export function connectWebSocket() {
 
     onConnect: () => {
       console.log("WebSocket connected");
-
-      // Optional: subscribe to something
-      client?.subscribe("/user/queue/messages", (message) => {
-        console.log("Received:", message.body);
-      });
     },
 
     onStompError: (frame) => {
