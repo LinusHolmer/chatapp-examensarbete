@@ -145,17 +145,6 @@ export default function HomePage() {
     }
   };
 
-  /*
-  // kör polling för inbox
-  useEffect(() => {
-    const interval = setInterval(() => {
-      pollInbox();
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [selectedFriend, inboxReady, lastSeen]);
-  */
- 
 
   const fetchFriends = async () => {
     setFriendsError(null);
@@ -179,67 +168,9 @@ export default function HomePage() {
     );
   }, []);
 
-  // fråga erik vrf den finns
-/* 
-  useEffect(() => {
-    setSelectedFriend((prev) => {
-      if (friends.length === 0) return null;
-      if (!prev) return friends[0];
-      const stillExists = friends.find((f) => f.name === prev.name);
-      return stillExists ?? friends[0];
-    });
-  }, [friends]);
-  */
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  
-  /*
-  const loadChat = async (friendName: string) => {
-    const receivedRes = await fetch("/api/messages/viewMessages", {
-      cache: "no-store",
-    });
-    const sentRes = await fetch("/api/messages/viewSentMessages", {
-      cache: "no-store",
-    });
-
-    const received = await receivedRes.json();
-    const sent = await sentRes.json();
-
-    const combined: ChatMessage[] = [
-      ...received
-        .filter((m: any) => m.sender === friendName)
-        .map((m: any) => ({
-          body: m.body,
-          timestamp: m.timestamp,
-          direction: "in",
-        })),
-
-      ...sent
-        .filter((m: any) => m.receiver === friendName)
-        .map((m: any) => ({
-          body: m.body,
-          timestamp: m.timestamp,
-          direction: "out",
-        })),
-    ];
-
-    combined.sort(
-      (a, b) =>
-        new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-    );
-
-    setMessages(combined);
-    const latestIncoming = combined
-      .filter((m) => m.direction === "in")
-      .slice(-1)[0]?.timestamp;
-
-    if (latestIncoming) {
-      setLastSeen((prev) => ({ ...prev, [friendName]: latestIncoming }));
-    }
-  };
-  */
 
   const loadChat = async (friendName: string) => {
     const response = await fetch("/api/messages/viewMessagesV2", {
@@ -324,18 +255,6 @@ export default function HomePage() {
 
     await loadChat(selectedFriend.name);
   };
-
-
-  /*
-  useEffect(() => {
-    if (!selectedFriend) return;
-
-    loadChat(selectedFriend.name);
-    const interval = setInterval(() => loadChat(selectedFriend.name), 3000);
-
-    return () => clearInterval(interval);
-  }, [selectedFriend]);
-  */
 
   return (
     <>
@@ -478,18 +397,6 @@ export default function HomePage() {
                 ))}
               </div>
 
-
-              {/* 
-              <form onSubmit={handleSend} className="chat-input-row">
-                <input
-                  type="text"
-                  placeholder={`Skriv till ${selectedFriend.name}...`}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-                <button type="submit">Skicka</button>
-              </form>
-              */}
                 <form onSubmit={handleSubmit(message, selectedFriend.name)} className="chat-input-row">
                 <input
                   type="text"
