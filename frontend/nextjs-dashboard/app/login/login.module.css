@@ -1,10 +1,15 @@
 .main {
-  margin: 0;
+  margin-top: 15rem;
+  
   padding: 0;
   font-family: sans-serif;
+  display: flex;
+  
+  justify-content: center;
 }
 
 .form {
+  position: fixed;
   display: flex;
   flex-direction: column;
   gap: 1rem;
