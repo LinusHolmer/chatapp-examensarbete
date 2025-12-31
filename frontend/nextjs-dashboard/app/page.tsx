@@ -12,9 +12,10 @@ import {
   connectWebSocket,
   sendMessage,
   disconnectWebSocket,
-  client
+  client,
+  onMessage
 } from "../app/websocket";
-import { handleSubmit } from "./components/ChatMethods/ChatMethods";
+
 
 type ModalType = "add-friends" | "discover-friends" | null;
 
@@ -68,13 +69,56 @@ export default function HomePage() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [friendsError, setFriendsError] = useState<string | null>(null);
 
-  // WebSocket connection
-  useEffect(() => {
-    connectWebSocket()
-    return disconnectWebSocket
-  }, [])
 
-  
+  useEffect(() => {
+  connectWebSocket();
+
+  onMessage((msg) => {
+    moveFriendToTop(msg.sender);
+
+    if (selectedFriend?.name === msg.sender) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          body: msg.body,
+          timestamp: msg.timestamp,
+          direction: "in",
+        },
+      ]);
+
+      setLastSeen((prev) => ({
+        ...prev,
+        [msg.sender]: msg.timestamp,
+      }));
+    } else {
+      setUnread((prev) => ({
+        ...prev,
+        [msg.sender]: (prev[msg.sender] ?? 0) + 1,
+      }));
+    }
+  });
+
+  return disconnectWebSocket;
+}, [selectedFriend]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!message.trim() || !selectedFriend) return;
+
+  const outgoing = {
+    body: message,
+    timestamp: new Date().toISOString(),
+    direction: "out" as const,
+  };
+
+  setMessages((prev) => [...prev, outgoing]);
+
+  sendMessage(message, selectedFriend.name);
+
+  setMessage("");
+  moveFriendToTop(selectedFriend.name);
+};
+
 
   const moveFriendToTop = (friendName: string) => {
     setFriends((prev) => {
@@ -86,6 +130,7 @@ export default function HomePage() {
     });
   };
 
+/*
   const pollInbox = async () => {
     const res = await fetch("/api/messages/viewMessages", {
       cache: "no-store",
@@ -153,6 +198,7 @@ export default function HomePage() {
       });
     }
   };
+  */
 
 
   const fetchFriends = async () => {
@@ -176,6 +222,8 @@ export default function HomePage() {
       setFriendsError(e.message || "Kunde inte hämta vänner")
     );
   }, []);
+
+  
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -385,7 +433,7 @@ export default function HomePage() {
                 ))}
               </div>
 
-                <form onSubmit={handleSubmit(message, selectedFriend.name)} 
+                <form onSubmit={handleSubmit} 
                   className="chat-input-row">
                 <input
                   type="text"

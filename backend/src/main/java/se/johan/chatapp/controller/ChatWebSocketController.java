@@ -35,13 +35,6 @@ public class ChatWebSocketController {
                 "/queue/messages",
                 saved
         );
-
-        messagingTemplate.convertAndSendToUser(
-                principal.getName(),
-                "/queue/messages",
-                saved
-        );
-
     }
 
 }
