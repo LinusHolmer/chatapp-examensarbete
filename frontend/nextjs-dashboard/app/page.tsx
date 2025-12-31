@@ -30,13 +30,6 @@ type ChatMessage = {
   direction: "in" | "out";
 };
 
-type WSMessage = {
-  sender: string;
-  receiver: string;
-  body: string;
-  timestamp: string;
-};
-
 export default function HomePage() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);

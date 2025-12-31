@@ -40,10 +40,7 @@ public class MessageController {
     }
 
     @DeleteMapping("/deleteLatest")
-    public ResponseEntity<?> deleteLatestMessage(
-            Authentication auth,
-            @Valid @RequestBody DeleteMessageRequest request
-    ) {
+    public ResponseEntity<?> deleteLatestMessage(Authentication auth, @Valid @RequestBody DeleteMessageRequest request) {
         try {
             Optional<Message> deleted = messageService.deleteMessage(
                     auth.getName(),
