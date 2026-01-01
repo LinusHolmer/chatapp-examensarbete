@@ -243,3 +243,29 @@ Det var svårt att veta om man fått nya meddelanden när man inte hade chatten 
  
 Vänlistan uppdaterades inte när någon skickade ett nytt meddelande. Jag skapade ett unread state som håller koll på hur många olästa meddelanden varje vän har.
 
+## 2026-01-01
+Vi tänker att vi ska hosta appen så man kan faktiskt prata med personer utanför sitt nätverk och för presentationen, kanske render för att vi har använt den tidigare.
+
+ADD: send message NEW
+Använder WebSocket för att skicka ett meddelande.
+
+ADD: Better endpoint
+Tidigare använde vi två endpoints för att hämta skickade och mottagna meddelanden. Jag kombinerade de två metoderna och samlade resultatet med en DTO på backend. Nu har jag ändrat frontend för att använda den nya endpointen, så trafiken halveras.
+
+ADD: handleSubmit
+moveFriendToTop-metoden används i den nya send message-knappen.
+
+ADD: WebSocket receive message
+Gjort så att vi använder message-objektet som backend skickar, och baserat på selectedUser ser du antingen det nya meddelandet eller får en notifikation.
+Jag tog också bort att skicka meddelandet till dig själv från backend, det var enklare att implementera på frontend, så man behöver inte gå fram och tillbaka.
+
+FIX: deleteAPI, unused object
+Fixade fel som uppstod om man fick 204 från frontend vid radering. Nu returnerar vi null istället för ett objekt.
+Tog bort oanvänt objekt i page.tsx.
+
+ADD: Register, Login, Logout
+Register – register-sidan ser nu ut som login-sidan och jag fixade CSS-buggen genom att använda .module.css.
+Login – har nu en sign up-knapp om du inte har ett konto, som länkar till register.
+Logout – tog bort logout-sidan och gjorde istället en logout-knapp i hamburgermenyn som skickar dig till login-sidan och refreshar den, så validering uppdateras.
+
+Tog även bort oanvänd “junk” som inte hade något syfte.
