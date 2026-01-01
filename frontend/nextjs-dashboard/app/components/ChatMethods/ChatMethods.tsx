@@ -42,8 +42,8 @@ export function useChatMethods(){
     
 
     } catch (error) {
-        console.log(error)
         setError("Network error: backend unreachable");
+        console.log(error)
     }
   };
   return {logout}
