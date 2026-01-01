@@ -39,7 +39,6 @@ export default function HomePage() {
   const [unread, setUnread] = useState<Record<string, number>>({});
   const [lastSeen, setLastSeen] = useState<Record<string, string>>({});
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
-  const [inboxReady, setInboxReady] = useState(false);
 
   const [discFriends, setDiscFriends] = useState<any[]>([]);
 
