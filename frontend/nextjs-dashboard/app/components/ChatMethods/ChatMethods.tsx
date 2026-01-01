@@ -30,6 +30,7 @@ export function useChatMethods(){
       if (!response.ok) {
         const errorBody = await response.text();
         setError(errorBody || "logout failed.");
+        console.log(error)
         return;
       }
 
