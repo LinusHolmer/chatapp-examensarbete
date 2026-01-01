@@ -1,22 +1,24 @@
 import { sendMessage } from "@/app/websocket";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 
 
-/*
-const [error, setError] = useState<string | null>(null);
-const [success, setSuccess] = useState<boolean>(false);
-*/
+
+
+
 
 export function useChatMethods(){
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<boolean>(false);
     const router = useRouter();
 
     const logout = async () => {
     
-    /*
+    
     setError(null);
     setSuccess(false);
-    */
+    
 
     try {
       const response = await fetch("http://localhost:8080/logout", {
@@ -27,11 +29,11 @@ export function useChatMethods(){
 
       if (!response.ok) {
         const errorBody = await response.text();
-       // setError(errorBody || "logout failed.");
+        setError(errorBody || "logout failed.");
         return;
       }
 
-     // setSuccess(true);
+    setSuccess(true);
 
      // kanske inte behövs
     router.push("/login") 
@@ -41,7 +43,7 @@ export function useChatMethods(){
 
     } catch (error) {
         console.log(error)
-     // setError("Network error: backend unreachable");
+        setError("Network error: backend unreachable");
     }
   };
   return {logout}
