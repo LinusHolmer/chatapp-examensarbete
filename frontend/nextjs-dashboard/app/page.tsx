@@ -454,7 +454,6 @@ export default function HomePage() {
             </div>
           )}
         </section>
-
         <div id="modal-root"></div>
       </main>
     </>

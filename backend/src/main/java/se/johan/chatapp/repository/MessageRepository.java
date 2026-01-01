@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface MessageRepository extends MongoRepository<Message, String> {
-    List<Message> findByReceiverOrderByTimestampDesc(String receiver);
-    List<Message> findBySenderOrderByTimestampDesc(String sender);
+    List<Message> findTop10ByReceiverOrderByTimestampDesc(String receiver);
+    List<Message> findTop10BySenderOrderByTimestampDesc(String sender);
 }

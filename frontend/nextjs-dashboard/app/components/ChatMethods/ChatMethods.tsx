@@ -2,12 +2,6 @@ import { sendMessage } from "@/app/websocket";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-
-
-
-
-
-
 export function useChatMethods(){
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);

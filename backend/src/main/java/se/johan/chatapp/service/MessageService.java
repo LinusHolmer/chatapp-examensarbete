@@ -100,7 +100,7 @@ public class MessageService {
         if (user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-            List<Message> messages = messageRepository.findByReceiverOrderByTimestampDesc(user.getUsername());
+            List<Message> messages = messageRepository.findTop10ByReceiverOrderByTimestampDesc(user.getUsername());
 
             List<MessageRequest> result = new ArrayList<>();
 
@@ -117,7 +117,7 @@ public class MessageService {
         if (user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-            List<Message> messages = messageRepository.findBySenderOrderByTimestampDesc(user.getUsername());
+            List<Message> messages = messageRepository.findTop10BySenderOrderByTimestampDesc(user.getUsername());
             List<SentMessageDTO> result = new ArrayList<>();
 
             for (Message message : messages) {
