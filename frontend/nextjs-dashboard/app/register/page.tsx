@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
-import "./register.css";
+import styles from "../register/register.module.css"
 import { useState } from "react";
 import CustomButton from "../components/CustomButton/CustomButton";
 
@@ -37,20 +37,23 @@ export default function RegisterPage() {
       setError("Network error: backend unreachable");
     }
   };
+ 
 
   return (
-    <main>
-      <form>
-        <label>Username</label>
+    <main className={styles.main}>
+      <form  className={styles.form}>
+        <label className={styles.label}>Username</label>
         <input
+          className={styles.input}
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
 
-        <label>Password</label>
+        <label className={styles.label}>Password</label>
         <input
+          className={styles.input}
           type="password"
           placeholder="Password"
           value={password}

@@ -1,36 +1,37 @@
-body,
-main {
-  margin: 0;
+.main {
+  margin-top: 15rem;
+  
   padding: 0;
   font-family: sans-serif;
-}
-
-main {
   display: flex;
+  
   justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #2e2e2e;
 }
 
-form {
+.form {
+  position: fixed;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  background-color: #d1d1d1;
+  background-color: #4f4f4f;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 300px;
 }
 
-label {
+.label {
   font-weight: 600;
+  color:#f5f5f5
 }
 
-input {
+.input {
   padding: 0.8rem;
   border: 1px solid #f5f5f5;
   border-radius: 6px;
   font-size: 1rem;
+}
+
+.text {
+  color:#f5f5f5;
 }

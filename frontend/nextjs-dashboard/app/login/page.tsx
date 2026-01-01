@@ -65,6 +65,11 @@ export default function LoginPage() {
 
         <CustomButton buttonText={"Login"} onClick={login} />
 
+        <div>
+        <p className={styles.text}>Need an account? <a className={styles.a} href="http://localhost:3000/register">Sign up!</a> </p>
+        
+        </div>
+
       </form>
     </main>
   );
