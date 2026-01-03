@@ -27,12 +27,12 @@ export default function AddFriendContent({ onAdded }: { onAdded: () => void | Pr
 }
 
 
-      setMsg(`Vän '${friendUsername}' har lagts till!`);
+      setMsg(`Friend '${friendUsername}' has been added!`);
       setFriendUsername("");
       await onAdded();
     } catch (e: any) {
       console.error("Add friend error:", e);
-      setError(e?.message || "Något gick fel");
+      setError(e?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -44,10 +44,10 @@ export default function AddFriendContent({ onAdded }: { onAdded: () => void | Pr
 
       <form onSubmit={handleAdd} className="addfriend-form">
         <label>
-          Användarnamn
+          Username
           <input
             type="text"
-            placeholder="användarnamn"
+            placeholder="username"
             value={friendUsername}
             onChange={(e) => setFriendUsername(e.target.value)}
             required
@@ -55,7 +55,7 @@ export default function AddFriendContent({ onAdded }: { onAdded: () => void | Pr
         </label>
 
         <button type="submit" className="btn-add" disabled={loading}>
-          {loading ? "Lägger till..." : "Lägg till"}
+          {loading ? "adding..." : "add"}
         </button>
       </form>
 

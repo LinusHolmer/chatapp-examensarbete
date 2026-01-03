@@ -213,6 +213,12 @@ export default function HomePage() {
     await loadChat(selectedFriend.name);
   };
 
+  const lastOutIndex = [...messages]
+  .map((m, i) => ({ m, i }))
+  .filter(({ m }) => m.direction === "out")
+  .slice(-1)[0]?.i;
+
+
 
 
 
@@ -260,7 +266,7 @@ export default function HomePage() {
                   try {
                     await fetchFriends();
                   } catch (e: any) {
-                    setFriendsError(e.message || "Kunde inte uppdatera vänner");
+                    setFriendsError(e.message || "could not update friends");
                   }
                 }}
               />
@@ -298,7 +304,7 @@ export default function HomePage() {
 
       <main className="chat-layout">
         <aside className="friends-panel">
-          <h2>Vänner</h2>
+          <h2>Friends</h2>
           {friendsError && <p className="status">{friendsError}</p>}
           <ul className="friends-list">
             {friends.map((friend) => (
@@ -335,7 +341,7 @@ export default function HomePage() {
           {selectedFriend ? (
             <>
               <header className="chat-header">
-                <h2>Chatt med {selectedFriend.name}</h2>
+                <h2>Chat with{selectedFriend.name}</h2>
               </header>
 
               <div className="chat-messages">
@@ -347,11 +353,11 @@ export default function HomePage() {
                     }`}
                   >
                     <strong>
-                      {m.direction === "out" ? "Du" : selectedFriend?.name}:
+                      {m.direction === "out" ? "You" : selectedFriend?.name}:
                     </strong>{" "}
                     {m.body}
                     {/* Visa Remove bara på dina egna (out) */}
-                    {m.direction === "out" && (
+                    {m.direction === "out" && i === lastOutIndex &&(
                       <button
                         className="remove-btn"
                         onClick={() => handleRemove()}
@@ -367,18 +373,18 @@ export default function HomePage() {
                   className="chat-input-row">
                 <input
                   type="text"
-                  placeholder={`Skriv till ${selectedFriend.name}...`}
+                  placeholder={`Write to ${selectedFriend.name}...`}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <button type="submit" onClick={() => {moveFriendToTop(selectedFriend.name)}}>Skicka</button>
+                <button type="submit" onClick={() => {moveFriendToTop(selectedFriend.name)}}>Send</button>
                 
               </form>
 
             </>
           ) : (
             <div className="chat-empty">
-              <p>Välj en vän till vänster för att börja chatta</p>
+              <p>Choose a friend to start chatting</p>
             </div>
           )}
         </section>

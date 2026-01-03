@@ -29,12 +29,12 @@ export default function AddFriendContent({
         throw new Error(`HTTP ${res.status}: ${text}`);
       }
 
-      setMsg(`Vän '${friendUsername}' har lagts till!`);
+      setMsg(`Friend '${friendUsername}' has been added!`);
       setFriendUsername("");
       await onAdded();
     } catch (e: any) {
       console.error("Add friend error:", e);
-      setError(e?.message || "Något gick fel");
+      setError(e?.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
