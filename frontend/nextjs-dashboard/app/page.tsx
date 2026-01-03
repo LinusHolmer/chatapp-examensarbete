@@ -40,6 +40,12 @@ export default function HomePage() {
   const [lastSeen, setLastSeen] = useState<Record<string, string>>({});
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
 
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [friendsError, setFriendsError] = useState<string | null>(null);
+
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+
   const [discFriends, setDiscFriends] = useState<any[]>([]);
 
   const { logout } = useChatMethods();
@@ -59,11 +65,6 @@ export default function HomePage() {
     setModalOpen(false);
     setActiveModal(null);
   };
-
-  // vänner från backend
-  const [friends, setFriends] = useState<Friend[]>([]);
-  const [friendsError, setFriendsError] = useState<string | null>(null);
-
 
   useEffect(() => {
   connectWebSocket();
@@ -147,11 +148,6 @@ export default function HomePage() {
     );
   }, []);
 
-  
-
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-
 
   const loadChat = async (friendName: string) => {
     const response = await fetch("/api/messages/viewMessagesV2", {
@@ -217,10 +213,6 @@ export default function HomePage() {
   .map((m, i) => ({ m, i }))
   .filter(({ m }) => m.direction === "out")
   .slice(-1)[0]?.i;
-
-
-
-
 
   return (
     <>
@@ -378,9 +370,7 @@ export default function HomePage() {
                   onChange={(e) => setMessage(e.target.value)}
                 />
                 <button type="submit" onClick={() => {moveFriendToTop(selectedFriend.name)}}>Send</button>
-                
               </form>
-
             </>
           ) : (
             <div className="chat-empty">
