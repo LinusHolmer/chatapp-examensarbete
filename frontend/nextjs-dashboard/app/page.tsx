@@ -15,7 +15,7 @@ import {
   client,
   onMessage
 } from "../app/websocket";
-import { useChatMethods } from "./components/ChatMethods/ChatMethods";
+import { useLogout } from "./components/ChatMethods/ChatMethods";
 
 
 type ModalType = "add-friends" | "discover-friends" | null;
@@ -48,7 +48,7 @@ export default function HomePage() {
 
   const [discFriends, setDiscFriends] = useState<any[]>([]);
 
-  const { logout } = useChatMethods();
+  const { logout } = useLogout();
 
   const discoverFriends = async () => {
     const response = await fetch("/api/chatUser/discover");
