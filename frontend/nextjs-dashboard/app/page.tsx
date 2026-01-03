@@ -332,7 +332,7 @@ export default function HomePage() {
           {selectedFriend ? (
             <>
               <header className="chat-header">
-                <h2>Chat with{selectedFriend.name}</h2>
+                <h2>Chat with {selectedFriend.name}</h2>
               </header>
 
               <div className="chat-messages">
