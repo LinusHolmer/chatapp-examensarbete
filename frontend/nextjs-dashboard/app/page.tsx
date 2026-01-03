@@ -190,7 +190,6 @@ export default function HomePage() {
     }
   };
 
-
   const handleRemove = async () => {
     if (!selectedFriend) return;
 
@@ -383,5 +382,3 @@ export default function HomePage() {
     </>
   );
 }
-
-

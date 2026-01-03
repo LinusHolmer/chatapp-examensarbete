@@ -35,7 +35,6 @@ export function useLogout(){
     
     router.refresh()
     
-
     } catch (error) {
         setError("Network error: backend unreachable");
         console.log(error)
