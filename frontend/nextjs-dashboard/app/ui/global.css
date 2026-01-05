@@ -1,0 +1,281 @@
+/* Gör att sidan har höjd att jobba med */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  height: 100%;
+}
+
+body > main {
+  max-height: 100%;
+}
+
+/* Layout: vänster lista + höger chatt */
+.chat-layout {
+  display: flex;
+  max-height: 100vh;                 
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+/* Vänster panel – vänner */
+.friends-panel {
+  width: 260px;
+  max-width: 35%;
+  background: #f3f4f6;
+  border-radius: 10px;
+  padding: 1rem;
+  box-sizing: border-box;
+  margin-right: 1rem;
+  max-height: 400px;      
+
+  overflow-y: auto;       
+}
+
+
+.friends-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  flex: 1;                      
+  overflow-y: auto;             
+  padding-right: 4px;          
+}
+
+.friend-item {
+  padding: 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
+.friend-item:hover {
+  background: #e5e7eb;
+}
+
+.friend-item.active {
+  background: #ff8800;
+  color: white;
+}
+
+/* Höger panel – chatt */
+.chat-panel {
+  flex: 1;
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 0.8rem;
+  display: flex;         
+  flex-direction: column; 
+
+}
+
+.chat-bubble {
+  max-width: 70%;
+  padding: 0.5rem 0.7rem;
+  border-radius: 12px;
+  margin-bottom: 0.4rem;
+  word-wrap: break-word;
+}
+.chat-bubble.sent {
+  background: #ff8800;     
+  color: white;
+  align-self: flex-end; 
+  
+}
+.chat-bubble.received {
+  background: #facc15;     
+  color: #111;
+  align-self: flex-start; 
+
+}
+
+
+
+/* skrivfält */
+.chat-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input-row input[type="text"] {
+  flex: 1;
+  padding: 0.6rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #00000000;
+  font-size: 0.95rem;
+  
+}
+
+.chat-input-row button {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #ff8800;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+  cursor: pointer;
+  font-weight: bold;
+  
+}
+
+.chat-input-row button:hover {
+  opacity: 0.9;
+}
+
+.chat-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  color: #6b7280;
+}
+
+
+
+
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafb; 
+  color: #111;
+  font-family: system-ui, sans-serif;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0rem 1.5rem;
+  max-height: 200px;
+  color: white;
+}
+
+.nav-logo img {
+  padding:0;
+  margin:0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  color:black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+/* Hamburgar icon*/
+.hamburger {
+  width: 35px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  z-index: 20;
+
+
+}
+
+.hamburger .line {
+  width: 100%;
+  height: 4px;
+  background: rgb(241, 127, 40);
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+/* Menyn som fälls ut */
+.mobile-menu {
+  position: absolute;
+  top: 60px;
+  right: 5px;
+  background: white;
+  padding: 1rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  list-style: none;
+  margin: 10;
+  
+}
+
+.mobile-menu li {
+  margin: 2.5rem 0;
+}
+
+.mobile-menu a {
+  color: rgb(241, 127, 40);
+  text-decoration: none;
+  font-size: 1.5rem;
+}
+
+.mobile-menu a:hover {
+  text-decoration: underline;
+}
+.remove-btn {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 0.7rem;
+  cursor: pointer;
+  margin-top: 4px;
+  display: block;
+}
+
+.remove-btn:hover {
+  text-decoration: underline;
+  color: red;
+}
+
+.friend-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge {
+  background: #ef4444;       /* röd */
+  color: white;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  line-height: 1;
+  min-width: 20px;
+  text-align: center;
+}
+
+.discover-friends {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
